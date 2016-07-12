@@ -16,9 +16,12 @@ buildDir = "_build"
 libDir = ".." </> "source"
 libSrcDir = libDir </> "src"
 libInclDir = libDir </> "include"
+libInclLocDir = libDir </> "include (local)"
 testSrcDir = "src"
 testInclDir = "include"
-headerDirs = [testInclDir, libInclDir] -- Non-recursive for now
+headerDirs = [testInclDir, libInclDir, libInclLocDir] -- Non-recursive for now
+
+preDefinedMacros = ["DEBUG"]
 
 objsTestFolderPrefix = buildDir </> "test"
 objsLibFolderPrefix = buildDir </> "lib"
@@ -26,7 +29,7 @@ objsLibFolderPrefix = buildDir </> "lib"
 
 -- Pre-calculated varaibles (Don't touch! :D)
 headerDirsWithFlag = map ("-iquote" ++) headerDirs
-
+preDefinedMacrosWithFlags = map ("-D " ++) preDefinedMacros
 
 main :: IO ()
 main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
@@ -59,7 +62,7 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
         putNormal ("Building obj: " ++ normalizedOut)
         putNormal ("Matching src: " ++ matchingSrc)
         
-        () <- cmd gcc "-c" [matchingSrc] "-o" [normalizedOut] "-MMD -MF" [srcDependencies] headerDirsWithFlag
+        () <- cmd gcc "-c" [matchingSrc] "-o" [normalizedOut] "-MMD -MF" [srcDependencies] headerDirsWithFlag preDefinedMacrosWithFlags
         needMakefileDependencies srcDependencies
         
 convertPathSrcToObj extraFolder path =
