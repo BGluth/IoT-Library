@@ -1,5 +1,5 @@
-#include "sensor_registration.h"
 #include "general_macros.h"
+#include "registration_api.h"
 #include "sensor_registration_local.h"
 
 #include "user_settings.h"
