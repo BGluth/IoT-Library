@@ -1,14 +1,17 @@
 #ifndef IOTLIB_SENSOR_REGISTRATION_LOCAL_H
 #define IOTLIB_SENSOR_REGISTRATION_LOCAL_H
 
+#include <stdbool.h>
 #include "general_macros.h"
 
-typedef int SensorID;
+bool _IoTLib_checkForUnsetFunctions();
 
+
+// Macros
 #define define_SensorID_with_type(type_name, type) \
 struct type_name \
 { \
-	SensorID id; \
+	IOTLIB_SensorID id; \
 	type data; \
 };
 
