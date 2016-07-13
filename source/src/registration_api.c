@@ -10,9 +10,9 @@ define_SensorID_with_type(IOTLIB_SensorIDAndName, char*); // NOTE: Currently rel
 define_SensorID_with_type(IOTLIB_SensorIDWithFunctionPointer, void*);
 define_SensorID_with_type(IOTLIB_SensorIDWithFloat, float);
 
-define_array_with_counter(IOTLIB_Array_SensorIDWithName, struct IOTLIB_SensorIDAndName);
-define_array_with_counter(IOTLIB_Array_SensorIDWithFunctionPointer, struct IOTLIB_SensorIDWithFunctionPointer);
-define_array_with_counter(IOTLIB_Array_SensorIDWithFloat, struct IOTLIB_SensorIDWithFloat);
+define_array_with_counter(IOTLIB_ManagedArray_SensorIDWithName, struct IOTLIB_SensorIDAndName);
+define_array_with_counter(IOTLIB_ManagedArray_SensorIDWithFunctionPointer, struct IOTLIB_SensorIDWithFunctionPointer);
+define_array_with_counter(IOTLIB_ManagedArray_SensorIDWithFloat, struct IOTLIB_SensorIDWithFloat);
 
 struct IOTLIB_SensorIDAndName IOTLIB_sensorIDsAndNames[IOTLIB_SENSOR_COUNT];
 struct IOTLIB_SensorIDWithFunctionPointer IOTLIB_initFunctions[IOTLIB_SENSOR_COUNT];
@@ -26,25 +26,25 @@ struct IOTLIB_SensorIDWithFunctionPointer IOTLIB_readDataOfflineFunctions[IOTLIB
 struct IOTLIB_SensorIDWithFunctionPointer IOTLIB_generateUploadPayloadFunctions[IOTLIB_SENSOR_COUNT];
 
 
-struct IOTLIB_Array_SensorIDWithName IOTLIB_sensorIDsAndNamesArray =
+struct IOTLIB_ManagedArray_SensorIDWithName IOTLIB_sensorIDsAndNamesManagedArray =
 	{.array = IOTLIB_sensorIDsAndNames, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_initFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_initFunctionsManagedArray =
 	{.array = IOTLIB_initFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_readFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_readFunctionsManagedArray =
 	{.array = IOTLIB_readFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_sensorDataToStringFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_sensorDataToStringFunctionsManagedArray =
 	{.array = IOTLIB_sensorDataToStringFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_powerOnFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_powerOnFunctionsManagedArray =
 	{.array = IOTLIB_powerOnFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFloat IOTLIB_sensorMinTempsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFloat IOTLIB_sensorMinTempsManagedArray =
 	{.array = IOTLIB_sensorMinTemps, .length = 0, .capacity = IOTLIB_NUM_SENSORS_WITH_MIN_TEMP};
-struct IOTLIB_Array_SensorIDWithFloat IOTLIB_sensorMaxTempsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFloat IOTLIB_sensorMaxTempsManagedArray =
 	{.array = IOTLIB_sensorMaxTemps, .length = 0, .capacity = IOTLIB_NUM_SENSORS_WITH_MAX_TEMP};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_writeDataOfflineFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_writeDataOfflineFunctionsManagedArray =
 	{.array = IOTLIB_writeDataOfflineFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_readDataOfflineFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_readDataOfflineFunctionsManagedArray =
 	{.array = IOTLIB_readDataOfflineFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
-struct IOTLIB_Array_SensorIDWithFunctionPointer IOTLIB_genereateuploadPayloadFunctionsArray =
+struct IOTLIB_ManagedArray_SensorIDWithFunctionPointer IOTLIB_genereateuploadPayloadFunctionsManagedArray =
 	{.array = IOTLIB_generateUploadPayloadFunctions, .length = 0, .capacity = IOTLIB_SENSOR_COUNT};
 
 struct IOTLIB_SensorIDWithFunctionPointer IOTLIB_sensorIDWithTemperatureReadingFunction;
@@ -69,64 +69,64 @@ void IoTLib_sensorRegistrationInit()
 // sensorName is used for debugging
 int IoTLib_registerSensor(char* sensorName)
 {
-	int id = IOTLIB_sensorIDsAndNamesArray.length;
+	int id = IOTLIB_sensorIDsAndNamesManagedArray.length;
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_sensorIDsAndNamesArray, IOTLIB_SensorIDAndName, id, sensorName);
+		(IOTLIB_sensorIDsAndNamesManagedArray, IOTLIB_SensorIDAndName, id, sensorName);
 	return id;
 }
 
 void IoTLib_registerSensorInitFunction(IOTLIB_SensorID sensorID, void (*sensorInitFunc)())
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_initFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, sensorInitFunc);
+		(IOTLIB_initFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, sensorInitFunc);
 }
 
 void IoTLib_registerSensorReadFunction(IOTLIB_SensorID sensorID, void* (*readSensorFunc)())
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_readFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, readSensorFunc);
+		(IOTLIB_readFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, readSensorFunc);
 }
 
 void IoTLib_registerConvertReadSensorDataToStringFunction(IOTLIB_SensorID sensorID, void (*dataToStringFunc)(void* rawSensorData, char* charBuffer))
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_sensorDataToStringFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, dataToStringFunc);
+		(IOTLIB_sensorDataToStringFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, dataToStringFunc);
 }
 
 void IoTLib_registerSensorPowerOnFunction(IOTLIB_SensorID sensorID, void (*powerOnFunc)())
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_powerOnFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, powerOnFunc);
+		(IOTLIB_powerOnFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, powerOnFunc);
 }
 
 void IoTLib_registerSensorMinOperatingTemp(IOTLIB_SensorID sensorID, float minTemp)
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_sensorMinTempsArray, IOTLIB_SensorIDWithFloat, sensorID, minTemp);
+		(IOTLIB_sensorMinTempsManagedArray, IOTLIB_SensorIDWithFloat, sensorID, minTemp);
 }
 
 void IoTLib_registerSensorMaxOperatingTemp(IOTLIB_SensorID sensorID, float maxTemp)
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_sensorMaxTempsArray, IOTLIB_SensorIDWithFloat, sensorID, maxTemp);
+		(IOTLIB_sensorMaxTempsManagedArray, IOTLIB_SensorIDWithFloat, sensorID, maxTemp);
 }
 
 void IoTLib_registerSensorWriteDataOfflineFunction(IOTLIB_SensorID sensorID, void (*writeOfflineFunc)(void* rawSensorData))
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_writeDataOfflineFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, writeOfflineFunc);
+		(IOTLIB_writeDataOfflineFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, writeOfflineFunc);
 }
 
 void IoTLib_registerSensorReadDataOfflineFunction(IOTLIB_SensorID sensorID, void* (*readOfflineFunc)())
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_readDataOfflineFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, readOfflineFunc);
+		(IOTLIB_readDataOfflineFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, readOfflineFunc);
 }
 
 void IoTLib_registerGenerateUploadPayloadFunction(IOTLIB_SensorID sensorID, void (*generateUploadPayloadFunc)(void* rawSensorData, char* charBuffer))
 {
 	initialize_sensorIDAndData_struct_and_add_to_array
-		(IOTLIB_genereateuploadPayloadFunctionsArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, generateUploadPayloadFunc);
+		(IOTLIB_genereateuploadPayloadFunctionsManagedArray, IOTLIB_SensorIDWithFunctionPointer, sensorID, generateUploadPayloadFunc);
 }
 
 void IoTLib_setUploadFunction(void (*uploadFunction)(char* urlUploadString))
