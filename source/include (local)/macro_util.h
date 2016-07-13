@@ -1,6 +1,6 @@
-#ifndef IOTLIB_MACRO_UTIL_H
-#define IOTLIB_MACRO_UTIL_H
+#ifndef IoTLib_MACRO_UTIL_H
+#define IoTLib_MACRO_UTIL_H
 
-void IOTLIB_check_array_bounds(int length, int capacity);
+void IoTLib_check_array_bounds(int length, int capacity);
 
 #endif

@@ -1,8 +1,8 @@
-void IOTLIB_check_array_bounds(int length, int capacity)
+void IoTLib_check_array_bounds(int length, int capacity)
 {
 	if (length == capacity)
 	{
-		//IOTLIB_Debug("Tried adding an item to an array that was at capacity!");
+		//IoTLib_Debug("Tried adding an item to an array that was at capacity!");
 		// TODO: Halt
 	}
 }
