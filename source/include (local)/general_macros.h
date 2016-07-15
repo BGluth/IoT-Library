@@ -15,6 +15,11 @@ struct type_name \
 	int capacity; \
 };
 
+#define initialize_managed_array(managedArrayType, managedArrayName, dataType, arraySize) \
+	dataType managedArrayName##_data_Array[arraySize]; \
+	managedArrayType managedArrayName = {.array = managedArrayName##_data_Array, .length = 0, .capacity = arraySize};
+
+
 // Conditional will not exist at run time.
 #define array_add(counter_array, item) \
 	if (DEBUG) \

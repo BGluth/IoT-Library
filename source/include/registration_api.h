@@ -12,7 +12,7 @@ void IoTLib_registerSensorPowerOnFunction(IoTLib_SensorID sensorID, void (*power
 void IoTLib_registerSensorMinOperatingTemp(IoTLib_SensorID sensorID, float minTemp);
 void IoTLib_registerSensorMaxOperatingTemp(IoTLib_SensorID sensorID, float maxTemp);
 void IoTLib_registerSensorWriteDataOfflineFunction(IoTLib_SensorID sensorID, void (*writeOfflineFunc)(void* rawSensorData));
-void IoTLib_registerSensorReadDataOfflineFunction(IoTLib_SensorID sensorID, void* (*readOfflineFunc)());
+void IoTLib_registerSensorReadOfflineDataFunction(IoTLib_SensorID sensorID, void* (*readOfflineFunc)());
 void IoTLib_registerGenerateUploadPayloadFunction(IoTLib_SensorID sensorID, void (*generateUploadPayloadFunc)(void* rawSensorData, char* charBuffer));
 
 void IoTLib_setUploadFunction(void (*uploadFunction)(char* urlUploadString));
