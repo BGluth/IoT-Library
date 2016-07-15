@@ -7,7 +7,7 @@
 void IoTLib_Error(char* message) {};
 
 /// Create an array of type inside of a struct with a length variable.
-#define IoTLib_define_array_with_counter(type_name, type) \
+#define IoTLib_define_managed_array_for_type(type_name, type) \
 struct type_name \
 { \
 	type* array; \
