@@ -21,13 +21,10 @@ struct type_name \
 
 
 // Conditional will not exist at run time.
-#define IoTLib_array_add(counter_array, item) \
-	if (DEBUG) \
-	{ \
-		IoTLib_check_array_bounds(counter_array.length, counter_array.capacity); \
-	} \
-	counter_array.array[counter_array.length] = item; \
-	counter_array.length++;
+#define IoTLib_array_add(managedArray, item) \
+	IoTLib_perform_managed_array_bounds_check(&managedArray.length, &managedArray.capacity); \
+	managedArray.array[managedArray.length] = item; \
+	managedArray.length++;
 
 
 #endif
