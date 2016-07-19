@@ -24,15 +24,15 @@
 		return getKeyIndexFunc(keyArray, arrayLength, keyToSearchFor); \
 	}
 
-#define IoTLib_define_managed_key_value_array(managedKeyValueArrayName, keyType, valueType) \
-	struct managedKeyValueArrayName \
+#define IoTLib_define_managed_key_value_array(managedKeyValueArrayTypeName, keyType, valueType) \
+	struct managedKeyValueArrayTypeName \
 	{ \
 		keyType* keys; \
 		valueType* values; \
 		int length; \
 		int capacity; \
 	}; \
-	_IoTLib_define_managed_key_value_array_functions(managedKeyValueArrayName, keyType, valueType);
+	_IoTLib_define_managed_key_value_array_functions(managedKeyValueArrayTypeName, keyType, valueType);
 
 #define IoTLib_managed_key_value_array_insert(managedKeyValueArray, managedKeyValueArrayTypeName, key, value) \
 	managedKeyValueArrayTypeName##_insert(&managedKeyValueArray, key, value);
@@ -40,7 +40,7 @@
 #define IoTLib_managed_key_value_array_get(managedKeyValueArray, managedKeyValueArrayTypeName, key) \
 	managedKeyValueArrayTypeName##_get(&managedKeyValueArray, key);
 
-#define IoTLib_initialize_managed_key_value_array(managedKeyValueArrayName, managedKeyValueArrayType, keyType, dataType, arraySize) \
-	keyType managedKeyValueArrayName##_keys[arraySize]; \
-	dataType managedKeyValueArrayName##_values[arraySize]; \
-	managedKeyValueArrayType managedKeyValueArrayName = {.keys = managedKeyValueArrayName##_keys, .values = managedKeyValueArrayName##_values, .length = 0, .capacity = arraySize};
+#define IoTLib_initialize_managed_key_value_array(managedKeyValueArrayName, managedKeyValueArrayType, keyType, dataType, arrayCapacity) \
+	keyType managedKeyValueArrayName##_keys[arrayCapacity]; \
+	dataType managedKeyValueArrayName##_values[arrayCapacity]; \
+	managedKeyValueArrayType managedKeyValueArrayName = {.keys = managedKeyValueArrayName##_keys, .values = managedKeyValueArrayName##_values, .length = 0, .capacity = arrayCapacity};
