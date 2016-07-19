@@ -1,12 +1,16 @@
+#include "registration_api.h"
+#include "registration_api_local.h"
+
 #include <stdbool.h>
 
-#include "registration_api.h"
-
+#include "sensorID.h"
 #include "managed_key_value_array_macros.h"
-#include "registration_api_local.h"
 #include "user_settings.h"
 
+IoTLib_define_functions_for_key_type(IoTLib_SensorID, IoTLib_sensorid_get_key_index);
+
 IoTLib_define_SensorID_with_data_struct(IoTLib_SensorIDWithFunctionPointer, void*)
+IoTLib_define_managed_array_for_type(IoTLib_ManagedArray_SensorID, IoTLib_SensorID);
 
 IoTLib_define_managed_key_value_array(IoTLib_managedKeyValueArray_SensorIDAndString, IoTLib_SensorID, char*);
 IoTLib_define_managed_key_value_array(IoTLib_managedKeyValueArray_SensorIDAndFunctionPointer, IoTLib_SensorID, void*);

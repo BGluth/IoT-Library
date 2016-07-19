@@ -1,7 +1,8 @@
 #ifndef IoTLib_SENSOR_REGISTRAITION_H
 #define IoTLib_SENSOR_REGISTRAITION_H
 
-typedef int IoTLib_SensorID;
+#include <stdbool.h>
+#include "typedefs.h"
 
 void IoTLib_run();
 int IoTLib_registerSensor(char* sensorName);
