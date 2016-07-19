@@ -13,18 +13,18 @@ struct managedArrayTypeName \
 	dataType* array; \
 	int length; \
 	int capacity; \
-};
+}
 
 #define IoTLib_initialize_managed_array(managedArrayType, managedArrayName, dataType, arrayCapacity) \
 	dataType managedArrayName##_data_Array[arrayCapacity]; \
-	managedArrayType managedArrayName = {.array = managedArrayName##_data_Array, .length = 0, .capacity = arrayCapacity};
+	managedArrayType managedArrayName = {.array = managedArrayName##_data_Array, .length = 0, .capacity = arrayCapacity}
 
 
 // Conditional will not exist at run time.
 #define IoTLib_array_add(managedArray, item) \
 	IoTLib_perform_managed_array_bounds_check(&managedArray.length, &managedArray.capacity); \
 	managedArray.array[managedArray.length] = item; \
-	managedArray.length++;
+	managedArray.length++
 
 
 #endif
