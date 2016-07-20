@@ -98,7 +98,7 @@ void IoTLib_registerSensorReadFunction(IoTLib_SensorID sensorID, void* (*readSen
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, readSensorFunc);
 }
 
-void IoTLib_registerConvertRawSensorDataToStringFunction(IoTLib_SensorID sensorID, void (*dataToStringFunc)(void* rawSensorData, char* charBuffer))
+void IoTLib_registerConvertRawSensorDataToStringFunction(IoTLib_SensorID sensorID, char* (*dataToStringFunc)(void* rawSensorData))
 {
 	IoTLib_MKV_insert(&IoTLib_rawDataToStringFunctions,
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, dataToStringFunc);
@@ -122,7 +122,7 @@ void IoTLib_registerSensorReadOfflineDataFunction(IoTLib_SensorID sensorID, void
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, readOfflineFunc);
 }
 
-void IoTLib_registerGenerateUploadPayloadFunction(IoTLib_SensorID sensorID, void (*generateUploadPayloadFunc)(void* rawSensorData, char* charBuffer))
+void IoTLib_registerGenerateUploadPayloadFunction(IoTLib_SensorID sensorID, char* (*generateUploadPayloadFunc)(void* rawSensorData))
 {
 	IoTLib_MKV_insert(&IoTLib_generateUploadPayloadFunctions,
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, generateUploadPayloadFunc);
