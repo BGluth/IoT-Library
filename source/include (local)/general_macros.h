@@ -27,7 +27,7 @@ struct managedArrayTypeName \
 }; \
 _IoTLib_define_managed_array_functions(managedArrayTypeName, dataType)
 
-#define IoTLib_initialize_managed_array(managedArrayType, managedArrayName, dataType, arrayCapacity) \
+#define IoTLib_initialize_managed_array(managedArrayName, managedArrayType, dataType, arrayCapacity) \
 	dataType managedArrayName##_data_Array[arrayCapacity]; \
 	managedArrayType managedArrayName = {.array = managedArrayName##_data_Array, .length = 0, .capacity = arrayCapacity}
 
