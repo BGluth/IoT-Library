@@ -42,13 +42,13 @@
 	}; \
 	_IoTLib_define_managed_key_value_array_functions(managedKeyValueArrayTypeName, keyType, valueType)
 
-#define IoTLib_managed_key_value_array_insert(managedKeyValueArray, managedKeyValueArrayTypeName, key, value) \
+#define IoTLib_MKV_insert(managedKeyValueArray, managedKeyValueArrayTypeName, key, value) \
 	managedKeyValueArrayTypeName##_insert(&managedKeyValueArray, key, value)
 
-#define IoTLib_managed_key_value_array_get(managedKeyValueArray, managedKeyValueArrayTypeName, key) \
+#define IoTLib_MKV_get(managedKeyValueArray, managedKeyValueArrayTypeName, key) \
 	managedKeyValueArrayTypeName##_get(&managedKeyValueArray, key)
 
-#define IoTLib_managed_key_value_array_contains_key(managedKeyValueArray, managedKeyValueArrayTypeName, key) \
+#define IoTLib_MKV_contains_key(managedKeyValueArray, managedKeyValueArrayTypeName, key) \
 	managedKeyValueArrayTypeName##_containsKey(&managedKeyValueArray, key)
 
 #define IoTLib_initialize_managed_key_value_array(managedKeyValueArrayName, managedKeyValueArrayType, keyType, dataType, arrayCapacity) \
