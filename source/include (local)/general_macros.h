@@ -9,7 +9,7 @@ void IoTLib_Error(char* message) {};
 #define _IoTLib_define_managed_array_add_function(managedArrayTypeName, dataType) \
 	void managedArrayTypeName##_add(struct managedArrayTypeName* managedArray, dataType item) \
 	{ \
-		IoTLib_perform_managed_array_bounds_check(&managedArray->length, &managedArray->capacity); \
+		IoTLib_perform_managed_array_bounds_check(managedArray->length, managedArray->capacity); \
 		managedArray->array[managedArray->length] = item; \
 		managedArray->length++; \
 	}
