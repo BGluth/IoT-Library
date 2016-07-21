@@ -1,0 +1,19 @@
+#ifndef IoTLib_RUN_HELPER_FUNCTIONS_H
+#define IoTLib_RUN_HELPER_FUNCTIONS_H
+
+#include <stdbool.h>
+#include "typedefs.h"
+
+struct IoTLib_MngdArray_SnsrID;
+struct IoTLib_MngdKVArray_SnsrIDDataPtr;
+struct IoTLib_MngdKVArray_SnsrIDString;
+
+void _IoTLib_call_sensor_init_functions();
+bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID id);
+void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensors);
+void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);
+void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);
+void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs);
+void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVArray_SnsrIDString stringSensorDataBuffer, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer);
+
+#endif

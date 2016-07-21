@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "managed_array_definitions.h"
+#include "run_helper_functions.h"
 #include "user_settings.h"
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorIDsAndNames,
@@ -54,7 +55,18 @@ void (*IoTLib_debugFunction)(char* debugString, bool isError);
 
 void IoTLib_run()
 {
+	IoTLib_initialize_managed_array(activeSensorIDs, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 
+	_IoTLib_call_sensor_init_functions();
+	_IoTLib_determine_active_sensors(&activeSensorIDs);
+
+	IoTLib_initialize_managed_key_value_array(rawSensorDataBuffer,
+		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
+	IoTLib_initialize_managed_key_value_array(stringSensorDataBuffer,
+		struct IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, char*, rawSensorDataBuffer.length);
+
+	_IoTLib_read_and_store_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
+	_IoTLib_get_string_represenations_of_raw_sensor_data(stringSensorDataBuffer, rawSensorDataBuffer);
 }
 
 void IoTLib_sensorRegistrationInit()

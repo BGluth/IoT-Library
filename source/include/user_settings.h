@@ -10,7 +10,7 @@
 
 #define IoTLib_NON_SENSOR_INIT_FUNCTIONS 1
 
-
+#define IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES 1
 
 // Helper macros (No touching!)
 // **************************************
