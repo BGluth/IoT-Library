@@ -4,6 +4,6 @@
 #include <stdbool.h>
 #include "general_macros.h"
 
-bool _IoTLib_checkForUnsetFunctions();
+bool _IoTLib_check_for_unset_functions();
 
 #endif
