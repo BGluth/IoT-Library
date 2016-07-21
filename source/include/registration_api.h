@@ -22,5 +22,7 @@ void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float m
 void IoTLib_set_upload_function(void (*uploadFunction)(char* urlUploadString));
 void IoTLib_set_debug_function(void (*debugFunction)(char* debugString, bool isError));
 void IoTLib_set_temp_sensorid_and_reading_function(IoTLib_SensorID tempSensorID, float (*readTempSensorFloat)(void* rawSensorData));
+void IoTLib_set_write_device_last_active_time_function(void (*writeDeviceLastActiveTimeFunc)(time_t lastActiveTime));
+void IoTLib_set_read_device_last_active_time_function(time_t (*readDeviceLastActiveTimeFunc)());
 
 #endif

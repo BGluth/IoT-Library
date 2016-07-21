@@ -56,7 +56,8 @@ struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
 void (*IoTLib_uploadFunction)(char* urlUploadString);
 void (*IoTLib_debugFunction)(char* debugString, bool isError);
-//void ()
+void (*IoTLib_writeDeviceLastActiveTimeFunc)(time_t lastActiveTime);
+time_t (*IoTLib_readDeviceLastActiveTimeFunc)();
 
 void IoTLib_run()
 {
@@ -170,6 +171,16 @@ void IoTLib_set_temp_sensorid_and_reading_function(IoTLib_SensorID tempSensorID,
 {
 	struct IoTLib_SnsrIDDataPtr sensorIDWithReadFunc = {.id = tempSensorID, .data = readTempSensorFloat};
 	IoTLib_tempSnsrIDAndRawToFloatFunc = sensorIDWithReadFunc;
+}
+
+void IoTLib_set_write_device_last_active_time_function(void (*writeDeviceLastActiveTimeFunc)(time_t lastActiveTime))
+{
+	IoTLib_writeDeviceLastActiveTimeFunc = writeDeviceLastActiveTimeFunc;
+}
+
+void IoTLib_set_read_device_last_active_time_function(time_t (*readDeviceLastActiveTimeFunc)())
+{
+	IoTLib_readDeviceLastActiveTimeFunc = readDeviceLastActiveTimeFunc;
 }
 
 bool _IoTLib_check_for_unset_functions()
