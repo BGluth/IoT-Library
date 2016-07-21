@@ -33,7 +33,7 @@ void _IoTLib_call_sensor_power_on_functions()
 	_IoTLib_call_all_void_functions_in_buffer(IoTLib_powerOnFunctions);
 }
 
-void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
+void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
 		_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
@@ -41,7 +41,7 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSens
 		_IoTLib_add_all_sensors_to_active_sensors(activeSensorIDs);
 }
 
-void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
+void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	// TODO: What if temperature sensor has a power on function?
 	void* (*rawTemperatureSensorReadFunc)() = IoTLib_MKV_get(
@@ -56,7 +56,7 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 		IoTLib_SensorID sensorID = IoTLib_sensorIDsAndNames.keys[i];
 		if (_IoTLib_sensor_can_operate_in_current_temperature(currentTemperature, sensorID))
 		{
-			IoTLib_MA_add(activeSensorIDs, sensorID, IoTLib_MngdArray_SnsrID);
+			IoTLib_MA_add(&activeSensorIDs, sensorID, IoTLib_MngdArray_SnsrID);
 		}
 	}
 }
@@ -76,10 +76,10 @@ bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature,
 	return true;
 }
 
-void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
+void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
-	activeSensorIDs->array = IoTLib_sensorIDsAndNames.keys;
-	activeSensorIDs->length = IoTLib_sensorIDsAndNames.length;
+	activeSensorIDs.array = IoTLib_sensorIDsAndNames.keys;
+	activeSensorIDs.length = IoTLib_sensorIDsAndNames.length;
 }
 
 void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
