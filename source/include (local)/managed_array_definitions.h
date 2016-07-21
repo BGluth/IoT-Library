@@ -1,6 +1,8 @@
 #ifndef IoTLib_MANGED_ARRAY_DEFINITIONS_H
 #define IoTLib_MANGED_ARRAY_DEFINITIONS_H
 
+#include <time.h>
+
 #include "typedefs.h"
 #include "general_macros.h"
 #include "managed_array_macros.h"
@@ -12,5 +14,6 @@ IoTLib_define_managed_array_and_declare_functions(IoTLib_MngdArray_SnsrID, IoTLi
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, char*);
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*);
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDFloat, IoTLib_SensorID, float);
+IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDTime, IoTLib_SensorID, time_t);
 
 #endif

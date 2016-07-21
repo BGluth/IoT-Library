@@ -2,6 +2,7 @@
 #define IoTLib_SENSOR_REGISTRAITION_H
 
 #include <stdbool.h>
+#include <time.h>
 #include "typedefs.h"
 
 void IoTLib_run();
@@ -13,6 +14,7 @@ void IoTLib_register_sensor_power_on_function(IoTLib_SensorID sensorID, void (*p
 void IoTLib_register_sensor_write_data_offline_function(IoTLib_SensorID sensorID, void (*writeOfflineFunc)(void* rawSensorData));
 void IoTLib_register_sensor_read_offline_data_function(IoTLib_SensorID sensorID, void* (*readOfflineFunc)());
 void IoTLib_register_generate_upload_payload_function(IoTLib_SensorID sensorID, char* (*generateUploadPayloadFunc)(void* rawSensorData));
+void IoTLib_register_sensor_read_frequency(IoTLib_SensorID sensorID, time_t sensorReadFrequency);
 void IoTLib_register_sensor_min_operating_temp(IoTLib_SensorID sensorID, float minTemp);
 void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float maxTemp);
 

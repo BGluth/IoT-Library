@@ -1,6 +1,7 @@
 #include "registration_api.h"
 #include "registration_api_local.h"
 
+#include <time.h>
 #include <stdbool.h>
 
 #include "managed_array_definitions.h"
@@ -38,6 +39,10 @@ IoTLib_initialize_managed_key_value_array(IoTLib_readOfflineDataFunctions,
 IoTLib_initialize_managed_key_value_array(IoTLib_generateUploadPayloadFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
+
+IoTLib_initialize_managed_key_value_array(IoTLib_sensorReadFrequencies,
+		struct IoTLib_MngdKVArray_SnsrIDTime,
+		IoTLib_SensorID, time_t, IoTLib_SENSOR_COUNT);
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorMinTemps,
 		struct IoTLib_MngdKVArray_SnsrIDFloat,
@@ -131,6 +136,12 @@ void IoTLib_register_generate_upload_payload_function(IoTLib_SensorID sensorID, 
 {
 	IoTLib_MKV_insert(&IoTLib_generateUploadPayloadFunctions,
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, generateUploadPayloadFunc);
+}
+
+void IoTLib_register_sensor_read_frequency(IoTLib_SensorID sensorID, time_t sensorReadFrequency)
+{
+	IoTLib_MKV_insert(&IoTLib_sensorReadFrequencies,
+		IoTLib_MngdKVArray_SnsrIDTime, sensorID, sensorReadFrequency);
 }
 
 void IoTLib_register_sensor_min_operating_temp(IoTLib_SensorID sensorID, float minTemp)
