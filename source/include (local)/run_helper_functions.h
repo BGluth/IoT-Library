@@ -8,7 +8,10 @@ struct IoTLib_MngdArray_SnsrID;
 struct IoTLib_MngdKVArray_SnsrIDDataPtr;
 struct IoTLib_MngdKVArray_SnsrIDString;
 
+void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer);
+
 void _IoTLib_call_sensor_init_functions();
+void _IoTLib_call_sensor_power_on_functions();
 bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID id);
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensors);
 void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);

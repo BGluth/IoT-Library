@@ -5,6 +5,7 @@
 
 extern struct IoTLib_MngdKVArray_SnsrIDString IoTLib_sensorIDsAndNames;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_initFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_powerOnFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_readFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
@@ -12,13 +13,24 @@ extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
+// Assuming the compiler will inline this function.
+void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
+{
+	for (int i = 0; i < voidFunctionBuffer.length; i++)
+	{
+		void (*voidFunction)() = voidFunctionBuffer.values[i];
+		voidFunction();
+	}
+}
+
 void _IoTLib_call_sensor_init_functions()
 {
-	for (int i = 0; i < IoTLib_initFunctions.length; i++)
-	{
-		void (*initFunction)() = IoTLib_initFunctions.values[i];
-		initFunction();
-	}
+	_IoTLib_call_all_void_functions_in_buffer(IoTLib_initFunctions);
+}
+
+void _IoTLib_call_sensor_power_on_functions()
+{
+	_IoTLib_call_all_void_functions_in_buffer(IoTLib_powerOnFunctions);
 }
 
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
