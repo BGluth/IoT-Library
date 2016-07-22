@@ -49,8 +49,8 @@ IoTLib_initialize_managed_key_value_array(IoTLib_setSensorLastPolledTimeFunction
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorPollFrequencies,
-		struct IoTLib_MngdKVArray_SnsrIDTime,
-		IoTLib_SensorID, time_t, IoTLib_SENSOR_COUNT);
+		struct IoTLib_MngdKVArray_SnsrIDInt,
+		IoTLib_SensorID, int, IoTLib_SENSOR_COUNT);
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorMinTemps,
 		struct IoTLib_MngdKVArray_SnsrIDFloat,
@@ -159,10 +159,10 @@ void IoTLib_register_sensor_set_last_polled_time_function(IoTLib_SensorID sensor
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, setSensorLastPolledTimeFunc);
 }
 
-void IoTLib_register_sensor_poll_frequency(IoTLib_SensorID sensorID, time_t sensorPollFrequency)
+void IoTLib_register_sensor_poll_frequency(IoTLib_SensorID sensorID, int sensorPollFrequency)
 {
 	IoTLib_MKV_insert(&IoTLib_sensorPollFrequencies,
-		IoTLib_MngdKVArray_SnsrIDTime, sensorID, sensorPollFrequency);
+		IoTLib_MngdKVArray_SnsrIDInt, sensorID, sensorPollFrequency);
 }
 
 void IoTLib_register_sensor_min_operating_temp(IoTLib_SensorID sensorID, float minTemp)
