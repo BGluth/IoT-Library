@@ -28,11 +28,11 @@ IoTLib_initialize_managed_key_value_array(IoTLib_powerOnFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_NUM_POWER_ON_FUNCTIONS);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_writeDataOfflineFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_storeDataOfflineFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_readOfflineDataFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_retrieveOfflineDataFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
@@ -40,11 +40,11 @@ IoTLib_initialize_managed_key_value_array(IoTLib_generateUploadPayloadFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_getSensorLastPolledTimeFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_retrieveSensorLastPolledTimeFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_setSensorLastPolledTimeFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_storeSensorLastPolledTimeFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
@@ -129,16 +129,16 @@ void IoTLib_register_sensor_power_on_function(IoTLib_SensorID sensorID, void (*p
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, powerOnFunc);
 }
 
-void IoTLib_register_sensor_write_data_offline_function(IoTLib_SensorID sensorID, void (*writeOfflineFunc)(void* rawSensorData))
+void IoTLib_register_sensor_store_data_offline_function(IoTLib_SensorID sensorID, void (*storeOfflineFunc)(void* rawSensorData))
 {
-	IoTLib_MKV_insert(&IoTLib_writeDataOfflineFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, writeOfflineFunc);
+	IoTLib_MKV_insert(&IoTLib_storeDataOfflineFunctions,
+		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, storeOfflineFunc);
 }
 
-void IoTLib_register_sensor_read_offline_data_function(IoTLib_SensorID sensorID, void* (*readOfflineFunc)())
+void IoTLib_register_sensor_retrieve_offline_data_function(IoTLib_SensorID sensorID, void* (*retrieveOfflineFunc)())
 {
-	IoTLib_MKV_insert(&IoTLib_readOfflineDataFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, readOfflineFunc);
+	IoTLib_MKV_insert(&IoTLib_retrieveOfflineDataFunctions,
+		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, retrieveOfflineFunc);
 }
 
 void IoTLib_register_sensor_generate_upload_payload_function(IoTLib_SensorID sensorID, char* (*generateUploadPayloadFunc)(void* rawSensorData))
@@ -147,16 +147,16 @@ void IoTLib_register_sensor_generate_upload_payload_function(IoTLib_SensorID sen
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, generateUploadPayloadFunc);
 }
 
-void IoTLib_register_sensor_get_last_polled_time_function(IoTLib_SensorID sensorID, time_t (*getSensorLastPolledTimeFunc)())
+void IoTLib_register_sensor_retrieve_last_polled_time_function(IoTLib_SensorID sensorID, time_t (*retrieveSensorLastPolledTimeFunc)())
 {
-	IoTLib_MKV_insert(&IoTLib_getSensorLastPolledTimeFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, getSensorLastPolledTimeFunc);
+	IoTLib_MKV_insert(&IoTLib_retrieveSensorLastPolledTimeFunctions,
+		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, retrieveSensorLastPolledTimeFunc);
 }
 
-void IoTLib_register_sensor_set_last_polled_time_function(IoTLib_SensorID sensorID, void (*setSensorLastPolledTimeFunc)(time_t lastPollTime))
+void IoTLib_register_sensor_store_last_polled_time_function(IoTLib_SensorID sensorID, void (*storeSensorLastPolledTimeFunc)(time_t lastPollTime))
 {
-	IoTLib_MKV_insert(&IoTLib_setSensorLastPolledTimeFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, setSensorLastPolledTimeFunc);
+	IoTLib_MKV_insert(&IoTLib_storeSensorLastPolledTimeFunctions,
+		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, storeSensorLastPolledTimeFunc);
 }
 
 void IoTLib_register_sensor_poll_frequency(IoTLib_SensorID sensorID, int sensorPollFrequency)

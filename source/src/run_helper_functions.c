@@ -12,8 +12,8 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_initFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_powerOnFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_pollFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
-extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_getSensorLastPolledTimeFunctions;
-extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_setSensorLastPolledTimeFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
@@ -97,7 +97,7 @@ void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID
 	{
 		IoTLib_SensorID currentSensorID = activeSensors.array[i];
 
-		 time_t (*getLastPolledTimeFunc)() = IoTLib_MKV_get(&IoTLib_getSensorLastPolledTimeFunctions,
+		 time_t (*getLastPolledTimeFunc)() = IoTLib_MKV_get(&IoTLib_retrieveSensorLastPolledTimeFunctions,
 			IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
 		 time_t timeSensorWasLastPolled = getLastPolledTimeFunc();
 
@@ -163,7 +163,7 @@ void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrI
 	for (int i = 0; i < activeSensorIDs.length; i++)
 	{
 		void (*setSensorLastPolledTimeFunc)(time_t lastPollTime) = IoTLib_MKV_get(
-			&IoTLib_setSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs.array[i]);
+			&IoTLib_storeSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs.array[i]);
 		setSensorLastPolledTimeFunc(_IoTLib_get_current_time());
 	}
 }
