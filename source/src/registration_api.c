@@ -83,7 +83,7 @@ void IoTLib_run()
 	_IoTLib_read_and_store_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
 	_IoTLib_get_string_represenations_of_raw_sensor_data(stringSensorDataBuffer, rawSensorDataBuffer);
 
-
+	_IoTLib_set_last_poll_time_for_active_sensors(activeSensorIDs);
 }
 
 void IoTLib_sensor_registration_init()
