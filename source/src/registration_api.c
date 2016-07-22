@@ -64,8 +64,8 @@ struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
 void (*IoTLib_uploadFunction)(char* urlUploadString);
 void (*IoTLib_debugFunction)(char* debugString, bool isError);
-void (*IoTLib_writeDeviceLastActiveTimeFunc)(time_t lastActiveTime);
-time_t (*IoTLib_readDeviceLastActiveTimeFunc)();
+void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
+time_t (*IoTLib_retrieveLastUploadTimeFunc)();
 
 void IoTLib_run()
 {
@@ -193,14 +193,14 @@ void IoTLib_set_temp_sensorid_and_poll_temp_function(IoTLib_SensorID tempSensorI
 	IoTLib_tempSnsrIDAndRawToFloatFunc = sensorIDWithReadFunc;
 }
 
-void IoTLib_set_write_device_last_active_time_function(void (*writeDeviceLastActiveTimeFunc)(time_t lastActiveTime))
+void IoTLib_set_store_last_upload_time_function(void (*storeLastUploadTimeFunc)(time_t lastUploadTime))
 {
-	IoTLib_writeDeviceLastActiveTimeFunc = writeDeviceLastActiveTimeFunc;
+	IoTLib_storeLastUploadTimeFunc = storeLastUploadTimeFunc;
 }
 
-void IoTLib_set_read_device_last_active_time_function(time_t (*readDeviceLastActiveTimeFunc)())
+void IoTLib_set_retrieve_last_upload_time_function(time_t (*retireveLastUploadTimeFunc)())
 {
-	IoTLib_readDeviceLastActiveTimeFunc = readDeviceLastActiveTimeFunc;
+	IoTLib_retrieveLastUploadTimeFunc = retireveLastUploadTimeFunc;
 }
 
 bool _IoTLib_check_for_unset_functions()

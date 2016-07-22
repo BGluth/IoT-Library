@@ -24,7 +24,7 @@ void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float m
 void IoTLib_set_upload_function(void (*uploadFunction)(char* urlUploadString));
 void IoTLib_set_debug_function(void (*debugFunction)(char* debugString, bool isError));
 void IoTLib_set_temp_sensorid_and_poll_temp_function(IoTLib_SensorID tempSensorID, float (*pollTempSensorFloat)(void* rawSensorData));
-void IoTLib_set_write_device_last_active_time_function(void (*writeDeviceLastActiveTimeFunc)(time_t lastActiveTime));
-void IoTLib_set_read_device_last_active_time_function(time_t (*readDeviceLastActiveTimeFunc)());
+void IoTLib_set_store_last_upload_time_function(void (*storeLastUploadTimeFunc)(time_t lastUploadTime));
+void IoTLib_set_retrieve_last_upload_time_function(time_t (*retireveLastUploadTimeFunc)());
 
 #endif

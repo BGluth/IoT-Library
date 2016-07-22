@@ -19,7 +19,6 @@ extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
-extern time_t (*IoTLib_readDeviceLastActiveTimeFunc)();
 
 // Assuming the compiler will inline this function.
 void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
