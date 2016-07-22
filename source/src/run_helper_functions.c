@@ -8,10 +8,13 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_initFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_powerOnFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_readFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_getSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
+extern struct IoTLib_MngdKVArray_SnsrIDTime IoTLib_sensorReadFrequencies;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
+extern time_t (*IoTLib_readDeviceLastActiveTimeFunc)();
 
 // Assuming the compiler will inline this function.
 void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
@@ -39,6 +42,8 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSenso
 		_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
 	else
 		_IoTLib_add_all_sensors_to_active_sensors(activeSensorIDs);
+
+	_IoTLib_filter_out_sensors_by_poll_frequency(activeSensorIDs);
 }
 
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
@@ -80,6 +85,44 @@ void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID ac
 {
 	activeSensorIDs.array = IoTLib_sensorIDsAndNames.keys;
 	activeSensorIDs.length = IoTLib_sensorIDsAndNames.length;
+}
+
+void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID activeSensors)
+{
+	for (int i = 0; i < activeSensors.length; i++)
+	{
+		IoTLib_SensorID currentSensorID = activeSensors.array[i];
+
+		 time_t (*getLastPolledTimeFunc)() = IoTLib_MKV_get(&IoTLib_getSensorLastPolledTimeFunctions,
+			IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
+		 time_t timeSinceSensorWasLastPolled = getLastPolledTimeFunc();
+
+		if (!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSinceSensorWasLastPolled, currentSensorID))
+		{
+			_IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(i, timeSinceSensorWasLastPolled, activeSensors);
+		}
+	}
+}
+
+bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSinceSensorWasLastPolled , IoTLib_SensorID sensorID)
+{
+	time_t currentSensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorReadFrequencies,
+		IoTLib_MngdKVArray_SnsrIDTime, sensorID);
+
+	return timeSinceSensorWasLastPolled > currentSensorReadFrequency;
+}
+
+void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(int indexOfSensorToSwap,
+	time_t timeSinceSensorWasLastPolled, struct IoTLib_MngdArray_SnsrID activeSensors)
+{
+	while (activeSensors.length > indexOfSensorToSwap &&
+		!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSinceSensorWasLastPolled, activeSensors.array[activeSensors.length]))
+	{
+		activeSensors.length--;
+	}
+
+	activeSensors.array[indexOfSensorToSwap] = activeSensors.array[activeSensors.length];
+	activeSensors.length--;
 }
 
 void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,

@@ -2,6 +2,8 @@
 #define IoTLib_RUN_HELPER_FUNCTIONS_H
 
 #include <stdbool.h>
+#include <time.h>
+
 #include "typedefs.h"
 
 struct IoTLib_MngdArray_SnsrID;
@@ -15,6 +17,9 @@ void _IoTLib_call_sensor_power_on_functions();
 bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID id);
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID activeSensors);
 void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensors);
+void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID activeSensors);
+bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSinceLastDeviceRun , IoTLib_SensorID sensorID);
+void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(int indexOfSensorToSwap, time_t timeSinceLastDeviceRun, struct IoTLib_MngdArray_SnsrID activeSensors);
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensors);
 void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs);
 void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVArray_SnsrIDString stringSensorDataBuffer, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer);
