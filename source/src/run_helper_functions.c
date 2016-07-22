@@ -1,7 +1,9 @@
 #include "run_helper_functions.h"
 
 #include <stddef.h>
+#include <time.h>
 
+#include "util_functions.h"
 #include "managed_array_definitions.h"
 #include "user_settings.h"
 
@@ -98,21 +100,22 @@ void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID
 
 		 time_t (*getLastPolledTimeFunc)() = IoTLib_MKV_get(&IoTLib_getSensorLastPolledTimeFunctions,
 			IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
-		 time_t timeSinceSensorWasLastPolled = getLastPolledTimeFunc();
+		 time_t timeSensorWasLastPolled = getLastPolledTimeFunc();
 
-		if (!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSinceSensorWasLastPolled, currentSensorID))
+		if (!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSensorWasLastPolled, currentSensorID))
 		{
-			_IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(i, timeSinceSensorWasLastPolled, activeSensors);
+			_IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(i, timeSensorWasLastPolled, activeSensors);
 		}
 	}
 }
 
-bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSinceSensorWasLastPolled , IoTLib_SensorID sensorID)
+bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSensorWasLastPolled , IoTLib_SensorID sensorID)
 {
-	int currentSensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
+	time_t sensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 		IoTLib_MngdKVArray_SnsrIDInt, sensorID);
+	double timeSinceSensorWasLastPolled = difftime(_IoTLib_get_current_time(), timeSensorWasLastPolled);
 
-	return timeSinceSensorWasLastPolled > currentSensorReadFrequency;
+	return timeSensorWasLastPolled > sensorReadFrequency;
 }
 
 void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(int indexOfSensorToSwap,
@@ -162,6 +165,6 @@ void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrI
 	{
 		void (*setSensorLastPolledTimeFunc)(time_t lastPollTime) = IoTLib_MKV_get(
 			&IoTLib_setSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs.array[i]);
-		setSensorLastPolledTimeFunc(time(NULL));
+		setSensorLastPolledTimeFunc(_IoTLib_get_current_time());
 	}
 }
