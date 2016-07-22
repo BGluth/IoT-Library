@@ -14,6 +14,8 @@ void IoTLib_register_sensor_power_on_function(IoTLib_SensorID sensorID, void (*p
 void IoTLib_register_sensor_write_data_offline_function(IoTLib_SensorID sensorID, void (*writeOfflineFunc)(void* rawSensorData));
 void IoTLib_register_sensor_read_offline_data_function(IoTLib_SensorID sensorID, void* (*readOfflineFunc)());
 void IoTLib_register_sensor_generate_upload_payload_function(IoTLib_SensorID sensorID, char* (*generateUploadPayloadFunc)(void* rawSensorData));
+void IoTLib_register_sensor_get_last_polled_time_function(IoTLib_SensorID sensorID, time_t (*getSensorLastPolledTimeFunc)());
+void IoTLib_register_sensor_set_last_polled_time_function(IoTLib_SensorID sensorID, void (*setSensorLastPolledTimeFunc)(time_t lastReadTime));
 void IoTLib_register_sensor_read_frequency(IoTLib_SensorID sensorID, time_t sensorReadFrequency);
 void IoTLib_register_sensor_min_operating_temp(IoTLib_SensorID sensorID, float minTemp);
 void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float maxTemp);
