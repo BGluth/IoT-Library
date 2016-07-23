@@ -1,10 +1,10 @@
 #include <stdbool.h>
 
 #define _IoTLib_declare_managed_key_value_array_insert_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	void managedKeyValueArrayTypeName##_insert(struct managedKeyValueArrayTypeName* keyValueArray, keyType key, valueType value)
+	void managedKeyValueArrayTypeName##_insert(struct managedKeyValueArrayTypeName* keyValueArray, const keyType key, valueType value)
 
 #define _IoTLib_define_managed_key_value_array_insert_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	void managedKeyValueArrayTypeName##_insert(struct managedKeyValueArrayTypeName* keyValueArray, keyType key, valueType value) \
+	void managedKeyValueArrayTypeName##_insert(struct managedKeyValueArrayTypeName* keyValueArray, const keyType key, valueType value) \
 	{ \
 		IoTLib_perform_managed_array_bounds_check(keyValueArray->length, keyValueArray->capacity); \
 		keyValueArray->keys[keyValueArray->length] = key; \
@@ -13,10 +13,10 @@
 	}
 
 #define _IoTLib_declare_managed_key_value_array_get_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	valueType managedKeyValueArrayTypeName##_get(struct managedKeyValueArrayTypeName* keyValueArray, keyType key)
+	valueType managedKeyValueArrayTypeName##_get(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key)
 
 #define _IoTLib_define_managed_key_value_array_get_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	valueType managedKeyValueArrayTypeName##_get(struct managedKeyValueArrayTypeName* keyValueArray, keyType key) \
+	valueType managedKeyValueArrayTypeName##_get(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key) \
 	{ \
 		int index = keyType##_get_key_index(keyValueArray->keys, keyValueArray->length, key); \
 		IoTLib_managed_key_value_array_getFunc_validate_key_index(index); \
@@ -24,10 +24,10 @@
 	}
 
 #define _IoTLib_declare_managed_key_value_array_try_get_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	bool managedKeyValueArrayTypeName##_tryGet(struct managedKeyValueArrayTypeName* keyValueArray, keyType key, valueType* valueTypeOut)
+	bool managedKeyValueArrayTypeName##_tryGet(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key, valueType* valueTypeOut)
 
 #define _IoTLib_define_managed_key_value_array_try_get_function(managedKeyValueArrayTypeName, keyType, valueType) \
-	bool managedKeyValueArrayTypeName##_tryGet(struct managedKeyValueArrayTypeName* keyValueArray, keyType key, valueType* valueTypeOut) \
+	bool managedKeyValueArrayTypeName##_tryGet(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key, valueType* valueTypeOut) \
 	{ \
 		int index = keyType##_get_key_index(keyValueArray->keys, keyValueArray->length, key); \
 		if (IoTLib_managed_key_value_array_index_is_valid_index(index)) \
@@ -39,10 +39,10 @@
 	}
 
 #define _IoTLib_declare_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType) \
-	bool managedKeyValueArrayTypeName##_containsKey(struct managedKeyValueArrayTypeName* keyValueArray, keyType key)
+	bool managedKeyValueArrayTypeName##_containsKey(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key)
 
 #define _IoTLib_define_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType) \
-	bool managedKeyValueArrayTypeName##_containsKey(struct managedKeyValueArrayTypeName* keyValueArray, keyType key) \
+	bool managedKeyValueArrayTypeName##_containsKey(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key) \
 	{ \
 		int index = keyType##_get_key_index(keyValueArray->keys, keyValueArray->length, key); \
 		return IoTLib_managed_key_value_array_index_is_valid_index(index); \
