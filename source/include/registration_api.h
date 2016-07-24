@@ -14,7 +14,7 @@ struct IoTLib_RawSensorDataAndSensorID
 
 void IoTLib_run();
 
-int IoTLib_register_sensor(char* sensorName);
+IoTLib_SensorID IoTLib_register_sensor(char* sensorName);
 void IoTLib_register_sensor_init_function(IoTLib_SensorID sensorID, void (*sensorInitFunc)());
 void IoTLib_register_sensor_poll_function(IoTLib_SensorID sensorID, void* (*readSensorFunc)());
 void IoTLib_register_sensor_convert_raw_sensor_data_to_string_function(IoTLib_SensorID sensorID, char* (*dataToStringFunc)(void* rawSensorData));

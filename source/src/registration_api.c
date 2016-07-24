@@ -98,7 +98,7 @@ void IoTLib_sensor_registration_init()
 }
 
 // sensorName is used for debugging
-int IoTLib_register_sensor(char* sensorName)
+IoTLib_SensorID IoTLib_register_sensor(char* sensorName)
 {
 	size_t id = IoTLib_sensorIDsAndNames.length;
 
