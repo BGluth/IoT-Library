@@ -4,13 +4,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <time.h>
-#include "typedefs.h"
 
-struct IoTLib_RawSensorDataAndSensorID
-{
-	IoTLib_SensorID sensorID;
-	void* rawSensorData;
-};
+#include "typedefs.h"
+#include "public_structs.h"
 
 void IoTLib_run();
 
