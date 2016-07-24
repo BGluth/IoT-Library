@@ -15,7 +15,7 @@ double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 	struct tm* currentTime = localtime(&rawCurrentTime);
 	double nearestTimeUntilNextSensorPoll = INTMAX_MAX;
 
-	for (int i = 0; i < IoTLib_retrieveSensorLastPolledTimeFunctions.length; i++)
+	for (size_t i = 0; i < IoTLib_retrieveSensorLastPolledTimeFunctions.length; i++)
 	{
 		int currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 			IoTLib_MngdKVArray_SnsrIDInt, IoTLib_retrieveSensorLastPolledTimeFunctions.keys[i]);

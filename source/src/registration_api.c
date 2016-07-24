@@ -100,7 +100,7 @@ void IoTLib_sensor_registration_init()
 // sensorName is used for debugging
 int IoTLib_register_sensor(char* sensorName)
 {
-	int id = IoTLib_sensorIDsAndNames.length;
+	size_t id = IoTLib_sensorIDsAndNames.length;
 
 	IoTLib_MKV_insert(&IoTLib_sensorIDsAndNames,
 			IoTLib_MngdKVArray_SnsrIDString, id, sensorName);

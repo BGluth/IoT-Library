@@ -1,6 +1,6 @@
 #include "macro_util.h"
 
-void IoTLib_perform_managed_array_bounds_check(const int managedArrayLength, const int managedArrayCapacity)
+void IoTLib_perform_managed_array_bounds_check(const size_t managedArrayLength, const size_t managedArrayCapacity)
 {
 	if (DEBUG)
 	{
@@ -12,7 +12,7 @@ void IoTLib_perform_managed_array_bounds_check(const int managedArrayLength, con
 	}
 }
 
-void IoTLib_managed_key_value_array_getFunc_validate_key_index(const int keyIndex)
+void IoTLib_managed_key_value_array_getFunc_validate_key_index(const size_t keyIndex)
 {
 	if (DEBUG)
 	{
@@ -24,7 +24,7 @@ void IoTLib_managed_key_value_array_getFunc_validate_key_index(const int keyInde
 	}
 }
 
-bool IoTLib_managed_key_value_array_index_is_valid_index(const int keyIndex)
+bool IoTLib_managed_key_value_array_index_is_valid_index(const size_t keyIndex)
 {
 	if (keyIndex == -1)
 		return false;

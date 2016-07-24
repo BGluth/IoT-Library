@@ -1,1 +1,3 @@
-typedef int IoTLib_SensorID;
+#include <stddef.h>
+
+typedef size_t IoTLib_SensorID;

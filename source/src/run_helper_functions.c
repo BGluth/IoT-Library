@@ -27,7 +27,7 @@ extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 // Assuming the compiler will inline this function.
 void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
 {
-	for (int i = 0; i < voidFunctionBuffer.length; i++)
+	for (size_t i = 0; i < voidFunctionBuffer.length; i++)
 	{
 		void (*voidFunction)() = voidFunctionBuffer.values[i];
 		voidFunction();
@@ -64,7 +64,7 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 	void* rawTemperatureData = rawTemperatureSensorReadFunc();
 	float currentTemperature = temperatureRawToFloatFunc(rawTemperatureData);
 
-	for (int i = 0; i < IoTLib_sensorIDsAndNames.length; i++)
+	for (size_t i = 0; i < IoTLib_sensorIDsAndNames.length; i++)
 	{
 		IoTLib_SensorID sensorID = IoTLib_sensorIDsAndNames.keys[i];
 		if (_IoTLib_sensor_can_operate_in_current_temperature(currentTemperature, sensorID))
@@ -97,7 +97,7 @@ void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID ac
 
 void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID activeSensors)
 {
-	for (int i = 0; i < activeSensors.length; i++)
+	for (size_t i = 0; i < activeSensors.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensors.array[i];
 
@@ -121,7 +121,7 @@ bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSensorWasLastPolled 
 	return timeSensorWasLastPolled > sensorReadFrequency;
 }
 
-void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(int indexOfSensorToSwap,
+void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(size_t indexOfSensorToSwap,
 	time_t timeSinceSensorWasLastPolled, struct IoTLib_MngdArray_SnsrID activeSensors)
 {
 	while (activeSensors.length > indexOfSensorToSwap &&
@@ -137,7 +137,7 @@ void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_bu
 void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
 	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
-	for (int i = 0; i < rawSensorDataBuffer.capacity; i++)
+	for (size_t i = 0; i < rawSensorDataBuffer.capacity; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
 		void* (*sensorReadFunc)() = IoTLib_MKV_get(&IoTLib_pollFunctions,
@@ -151,7 +151,7 @@ void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDa
 void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVArray_SnsrIDString stringSensorDataBuffer,
 	const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
 {
-	for (int i = 0; i < rawSensorDataBuffer.length; i++)
+	for (size_t i = 0; i < rawSensorDataBuffer.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = rawSensorDataBuffer.keys[i];
 		char* (*rawSensorDataToStringFunc)(void* rawSensorData) =
@@ -164,7 +164,7 @@ void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVAr
 
 void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
-	for (int i = 0; i < activeSensorIDs.length; i++)
+	for (size_t i = 0; i < activeSensorIDs.length; i++)
 	{
 		void (*setSensorLastPolledTimeFunc)(time_t lastPollTime) = IoTLib_MKV_get(
 			&IoTLib_storeSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs.array[i]);
@@ -196,7 +196,7 @@ bool _IoTLib_enough_time_elapsed_for_upload()
 void _IoTLib_generate_url_payloads_for_each_active_sensor(struct IoTLib_MngdArray_String urlPayloadsBuffer,
 		const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
 {
-	for (int i = 0 ; i < activeSensorIDs.length; i++)
+	for (size_t i = 0 ; i < activeSensorIDs.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
 		char* (*generateUploadPayloadFunc)(void* rawSensorData) = IoTLib_MKV_get(

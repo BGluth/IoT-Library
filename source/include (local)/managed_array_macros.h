@@ -2,6 +2,7 @@
 #define IoTLib_MANAGED_ARRAY_MACROS_H
 
 #include "macro_util.h"
+#include <stddef.h>
 
 #define _IoTLib_declare_managed_array_add_function(managedArrayTypeName, dataType) \
 	void managedArrayTypeName##_add(struct managedArrayTypeName* managedArray, dataType item)
@@ -26,8 +27,8 @@
 struct managedArrayTypeName \
 { \
 	dataType* array; \
-	int length; \
-	int capacity; \
+	size_t length; \
+	size_t capacity; \
 }; \
 _IoTLib_declare_managed_array_functions(managedArrayTypeName, dataType)
 
