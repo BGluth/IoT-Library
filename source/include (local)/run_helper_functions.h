@@ -6,6 +6,7 @@
 
 #include "typedefs.h"
 
+struct IoTLib_MngdArray_String;
 struct IoTLib_MngdArray_SnsrID;
 struct IoTLib_MngdKVArray_SnsrIDDataPtr;
 struct IoTLib_MngdKVArray_SnsrIDString;
@@ -24,5 +25,8 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSenso
 void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs);
 void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVArray_SnsrIDString stringSensorDataBuffer, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer);
 void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs);
+void _IoTLib_upload_if_enough_time_has_elapsed();
+bool _IoTLib_enough_time_elapsed_for_upload();
+void _IoTLib_generate_url_payloads_for_each_active_sensor(struct IoTLib_MngdArray_String urlPayloadsBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer);
 
 #endif

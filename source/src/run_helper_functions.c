@@ -10,6 +10,7 @@
 extern struct IoTLib_MngdKVArray_SnsrIDString IoTLib_sensorIDsAndNames;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_initFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_powerOnFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_generateUploadPayloadFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_pollFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
@@ -19,6 +20,9 @@ extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
+
+extern time_t (*IoTLib_retrieveLastUploadTimeFunc)();
+extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 
 // Assuming the compiler will inline this function.
 void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
@@ -165,5 +169,40 @@ void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrI
 		void (*setSensorLastPolledTimeFunc)(time_t lastPollTime) = IoTLib_MKV_get(
 			&IoTLib_storeSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs.array[i]);
 		setSensorLastPolledTimeFunc(_IoTLib_get_current_time());
+	}
+}
+
+void _IoTLib_upload_if_enough_time_has_elapsed(const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
+	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
+{
+	if (_IoTLib_enough_time_elapsed_for_upload())
+	{
+		IoTLib_initialize_managed_array(urlPayloadsBuffer, struct IoTLib_MngdArray_String, char*, activeSensorIDs.length);
+		_IoTLib_generate_url_payloads_for_each_active_sensor(urlPayloadsBuffer, activeSensorIDs, rawSensorDataBuffer);
+
+		for (int i = 0; i < urlPayloadsBuffer.length; i++)
+		{
+			IoTLib_uploadFunction(urlPayloadsBuffer.array[i]);
+		}
+	}
+}
+
+bool _IoTLib_enough_time_elapsed_for_upload()
+{
+	double timeSinceLastUpdate = difftime(_IoTLib_get_current_time(), IoTLib_retrieveLastUploadTimeFunc());
+	return IoTLib_MIN_SECONDS_BETWEEN_UPLOADS < timeSinceLastUpdate;
+}
+
+void _IoTLib_generate_url_payloads_for_each_active_sensor(struct IoTLib_MngdArray_String urlPayloadsBuffer,
+		const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
+{
+	for (int i = 0 ; i < activeSensorIDs.length; i++)
+	{
+		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
+		char* (*generateUploadPayloadFunc)(void* rawSensorData) = IoTLib_MKV_get(
+			&IoTLib_generateUploadPayloadFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
+		void* rawSensorData = IoTLib_MKV_get(&rawSensorDataBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
+
+		IoTLib_MA_add(&urlPayloadsBuffer, generateUploadPayloadFunc(rawSensorData), IoTLib_MngdArray_String);
 	}
 }
