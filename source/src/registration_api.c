@@ -1,6 +1,7 @@
 #include "registration_api.h"
 #include "registration_api_local.h"
 
+#include <stddef.h>
 #include <time.h>
 #include <stdbool.h>
 
@@ -28,11 +29,11 @@ IoTLib_initialize_managed_key_value_array(IoTLib_powerOnFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_NUM_POWER_ON_FUNCTIONS);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_storeDataOfflineFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_storeDataUnsentFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_retrieveOfflineDataFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_retrieveUnsentDataFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
@@ -66,6 +67,8 @@ void (*IoTLib_uploadFunction)(char* urlUploadString);
 void (*IoTLib_debugFunction)(char* debugString, bool isError);
 void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
 time_t (*IoTLib_retrieveLastUploadTimeFunc)();
+struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
+size_t (*IoTLib_getStoredUnsentDataCountFunc)();
 
 void IoTLib_run()
 {
@@ -129,16 +132,10 @@ void IoTLib_register_sensor_power_on_function(IoTLib_SensorID sensorID, void (*p
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, powerOnFunc);
 }
 
-void IoTLib_register_sensor_store_data_offline_function(IoTLib_SensorID sensorID, void (*storeOfflineFunc)(void* rawSensorData))
+void IoTLib_register_sensor_store_unsent_data_function(IoTLib_SensorID sensorID, void (*storeUnsentFunc)(void* rawSensorData))
 {
-	IoTLib_MKV_insert(&IoTLib_storeDataOfflineFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, storeOfflineFunc);
-}
-
-void IoTLib_register_sensor_retrieve_offline_data_function(IoTLib_SensorID sensorID, void* (*retrieveOfflineFunc)())
-{
-	IoTLib_MKV_insert(&IoTLib_retrieveOfflineDataFunctions,
-		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, retrieveOfflineFunc);
+	IoTLib_MKV_insert(&IoTLib_storeDataUnsentFunctions,
+		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, storeUnsentFunc);
 }
 
 void IoTLib_register_sensor_generate_upload_payload_function(IoTLib_SensorID sensorID, char* (*generateUploadPayloadFunc)(void* rawSensorData))
@@ -201,6 +198,17 @@ void IoTLib_set_store_last_upload_time_function(void (*storeLastUploadTimeFunc)(
 void IoTLib_set_retrieve_last_upload_time_function(time_t (*retireveLastUploadTimeFunc)())
 {
 	IoTLib_retrieveLastUploadTimeFunc = retireveLastUploadTimeFunc;
+}
+
+void IoTLib_register_get_stored_unsent_data_count_function(size_t (*getStoredUnsentDataCountFunc)())
+{
+	IoTLib_getStoredUnsentDataCountFunc = getStoredUnsentDataCountFunc;
+}
+
+void IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(
+	struct IoTLib_RawSensorDataAndSensorID* (*retrieveAllUnsentDataFunc)())
+{
+	IoTLib_retrieveAllUnsentDataFunc = retrieveAllUnsentDataFunc;
 }
 
 bool _IoTLib_check_for_unset_functions()
