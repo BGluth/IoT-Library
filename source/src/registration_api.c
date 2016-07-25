@@ -63,7 +63,7 @@ struct IoTLib_Vector IoTLib_waitlist_funcs;
 
 struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 void (*IoTLib_uploadFunction)(char* urlUploadString);
-void (*IoTLib_debugFunction)(char* debugString, bool isError);
+void (*IoTLib_debugFunction)(char* debugString);
 void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
 time_t (*IoTLib_retrieveLastUploadTimeFunc)();
 struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
@@ -183,7 +183,7 @@ void IoTLib_set_upload_function(void (*uploadFunction)(char* urlUploadString))
 	IoTLib_uploadFunction = uploadFunction;
 }
 
-void IoTLib_set_debug_function(void (*debugFunction)(char* debugString, bool isError))
+void IoTLib_set_debug_function(void (*debugFunction)(char* debugString))
 {
 	IoTLib_debugFunction = debugFunction;
 }
