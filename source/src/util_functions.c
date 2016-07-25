@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <time.h>
 
 #include "managed_array_definitions.h"
 

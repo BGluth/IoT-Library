@@ -1,6 +1,5 @@
 #include "managed_array_definitions.h"
 
-#include <time.h>
 #include "sensorID.h"
 
 IoTLib_define_functions_for_key_type(IoTLib_SensorID, IoTLib_sensorid_get_key_index);

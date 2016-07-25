@@ -1,10 +1,6 @@
 #include "registration_api.h"
 #include "registration_api_local.h"
 
-#include <stddef.h>
-#include <time.h>
-#include <stdbool.h>
-
 #include "managed_array_definitions.h"
 #include "run_helper_functions.h"
 #include "user_settings.h"
@@ -80,8 +76,6 @@ void IoTLib_run()
 
 	IoTLib_initialize_managed_key_value_array(rawSensorDataBuffer,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
-	IoTLib_initialize_managed_key_value_array(stringSensorDataBuffer,
-		struct IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, char*, rawSensorDataBuffer.length);
 
 	_IoTLib_poll_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
 	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(rawSensorDataBuffer, activeSensorIDs);

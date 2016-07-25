@@ -1,8 +1,5 @@
 #include "run_helper_functions.h"
 
-#include <stddef.h>
-#include <time.h>
-
 #include "public_structs.h"
 #include "util_functions.h"
 #include "managed_array_definitions.h"
