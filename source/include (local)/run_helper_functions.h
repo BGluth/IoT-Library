@@ -32,5 +32,6 @@ void _IoTLib_upload_all_pending_sensor_data(const struct IoTLib_MngdKVArray_Snsr
 void _IoTLib_generate_url_payloads_for_newly_polled_sensor_data(struct IoTLib_MngdArray_String urlPayloadsBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer);
 void _IoTLib_generate_url_payloads_for_all_unsent_polled_sensor_data();
 void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVArray_SnsrIDDataPtr newRawSensorDataBuffer);
+void _IoTLib_wait_for_tasks_to_complete();
 
 #endif

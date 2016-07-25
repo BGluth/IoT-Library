@@ -1,5 +1,6 @@
 #include "run_helper_functions.h"
 
+#include "vector.h"
 #include "public_structs.h"
 #include "util_functions.h"
 #include "managed_array_definitions.h"
@@ -17,6 +18,7 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeDataUnsentFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
+extern struct IoTLib_Vector IoTLib_waitlist_funcs;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
@@ -246,5 +248,21 @@ void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVAr
 			&IoTLib_storeDataUnsentFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, newRawSensorDataBuffer.keys[i]);
 
 		storeNewlyPolledSensorData(newRawSensorDataBuffer.values[i]);
+	}
+}
+
+void _IoTLib_wait_for_tasks_to_complete()
+{
+	while (IoTLib_waitlist_funcs.count > 0)
+	{
+		for (size_t i = 0; i < IoTLib_waitlist_funcs.count; i++)
+		{
+			bool (*checkAndHandleTaskCompletionFunc)() = IoTLib_vector_get(&IoTLib_waitlist_funcs, i);
+			bool completed = checkAndHandleTaskCompletionFunc();
+			if (completed)
+			{
+				IoTLib_vector_delete(&IoTLib_waitlist_funcs, i);
+			}
+		}
 	}
 }

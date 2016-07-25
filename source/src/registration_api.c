@@ -4,6 +4,7 @@
 #include "managed_array_definitions.h"
 #include "run_helper_functions.h"
 #include "user_settings.h"
+#include "vector.h"
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorIDsAndNames,
 		struct IoTLib_MngdKVArray_SnsrIDString,
@@ -57,8 +58,10 @@ IoTLib_initialize_managed_key_value_array(IoTLib_sensorMaxTemps,
 		struct IoTLib_MngdKVArray_SnsrIDFloat,
 		IoTLib_SensorID, float, IoTLib_NUM_SENSORS_WITH_MAX_TEMP);
 
-struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
+struct IoTLib_Vector IoTLib_waitlist_funcs;
 
+
+struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 void (*IoTLib_uploadFunction)(char* urlUploadString);
 void (*IoTLib_debugFunction)(char* debugString, bool isError);
 void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
@@ -78,9 +81,11 @@ void IoTLib_run()
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
 
 	_IoTLib_poll_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
+	_IoTLib_set_last_poll_time_for_active_sensors(activeSensorIDs);
+
 	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(rawSensorDataBuffer, activeSensorIDs);
 
-	_IoTLib_set_last_poll_time_for_active_sensors(activeSensorIDs);
+	_IoTLib_wait_for_tasks_to_complete();
 }
 
 void IoTLib_sensor_registration_init()
@@ -89,6 +94,8 @@ void IoTLib_sensor_registration_init()
 	{
 		_IoTLib_check_for_unset_functions();
 	}
+
+	IoTLib_vector_init(&IoTLib_waitlist_funcs);
 }
 
 // sensorName is used for debugging
@@ -168,6 +175,7 @@ void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float m
 		IoTLib_MngdKVArray_SnsrIDFloat, sensorID, maxTemp);
 }
 
+
 void IoTLib_set_upload_function(void (*uploadFunction)(char* urlUploadString))
 {
 	IoTLib_uploadFunction = uploadFunction;
@@ -204,6 +212,13 @@ void IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(
 {
 	IoTLib_retrieveAllUnsentDataFunc = retrieveAllUnsentDataFunc;
 }
+
+
+void IoTLib_add_task_to_waitlist(bool (*checkAndHandleTaskCompletionFunc)())
+{
+	IoTLib_vector_add(&IoTLib_waitlist_funcs, checkAndHandleTaskCompletionFunc);
+}
+
 
 bool _IoTLib_check_for_unset_functions()
 {
