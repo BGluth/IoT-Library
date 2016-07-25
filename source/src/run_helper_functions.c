@@ -13,6 +13,7 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_pollFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeSensorLastPolledTimeFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeDataUnsentFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
@@ -181,7 +182,7 @@ void _IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(
 	}
 	else
 	{
-		// TODO: Store new data locally.
+		_IoTLib_store_newly_polled_sensor_data_locally(newRawSensorDataBuffer);
 	}
 }
 
@@ -234,5 +235,16 @@ void _IoTLib_generate_url_payloads_for_all_unsent_polled_sensor_data(struct IoTL
 			&IoTLib_generateUploadPayloadFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, currentUnsentSensorData.id);
 
 		IoTLib_MA_add(&urlPayloadsBuffer, generateUrlPayloadFunc(currentUnsentSensorData.data), IoTLib_MngdArray_String);
+	}
+}
+
+void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVArray_SnsrIDDataPtr newRawSensorDataBuffer)
+{
+	for (size_t i = 0; i < newRawSensorDataBuffer.length; i++)
+	{
+		void (*storeNewlyPolledSensorData)(void* rawSensorData) = IoTLib_MKV_get(
+			&IoTLib_storeDataUnsentFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, newRawSensorDataBuffer.keys[i]);
+
+		storeNewlyPolledSensorData(newRawSensorDataBuffer.values[i]);
 	}
 }
