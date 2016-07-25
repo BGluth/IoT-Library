@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <time.h>
 
+#include "public_structs.h"
 #include "util_functions.h"
 #include "managed_array_definitions.h"
 #include "user_settings.h"
@@ -23,6 +24,8 @@ extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
 extern time_t (*IoTLib_retrieveLastUploadTimeFunc)();
 extern void (*IoTLib_uploadFunction)(char* urlUploadString);
+extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
+extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
 
 // Assuming the compiler will inline this function.
 void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr voidFunctionBuffer)
@@ -134,7 +137,7 @@ void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_bu
 	activeSensors.length--;
 }
 
-void _IoTLib_read_and_store_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
+void _IoTLib_poll_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
 	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	for (size_t i = 0; i < rawSensorDataBuffer.capacity; i++)
@@ -172,18 +175,16 @@ void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrI
 	}
 }
 
-void _IoTLib_upload_if_enough_time_has_elapsed(const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
-	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
+void _IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(
+	struct IoTLib_MngdKVArray_SnsrIDDataPtr newRawSensorDataBuffer, const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	if (_IoTLib_enough_time_elapsed_for_upload())
 	{
-		IoTLib_initialize_managed_array(urlPayloadsBuffer, struct IoTLib_MngdArray_String, char*, activeSensorIDs.length);
-		_IoTLib_generate_url_payloads_for_each_active_sensor(urlPayloadsBuffer, activeSensorIDs, rawSensorDataBuffer);
-
-		for (int i = 0; i < urlPayloadsBuffer.length; i++)
-		{
-			IoTLib_uploadFunction(urlPayloadsBuffer.array[i]);
-		}
+		_IoTLib_upload_all_pending_sensor_data(newRawSensorDataBuffer, activeSensorIDs);
+	}
+	else
+	{
+		// TODO: Store new data locally.
 	}
 }
 
@@ -193,8 +194,24 @@ bool _IoTLib_enough_time_elapsed_for_upload()
 	return IoTLib_MIN_SECONDS_BETWEEN_UPLOADS < timeSinceLastUpdate;
 }
 
-void _IoTLib_generate_url_payloads_for_each_active_sensor(struct IoTLib_MngdArray_String urlPayloadsBuffer,
-		const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
+void _IoTLib_upload_all_pending_sensor_data(const struct IoTLib_MngdKVArray_SnsrIDDataPtr newRawSensorDataBuffer,
+	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
+{
+	size_t storedUnsentSensorPollCount = IoTLib_getStoredUnsentDataCountFunc();
+	IoTLib_initialize_managed_array(urlPayloadsBuffer, struct IoTLib_MngdArray_String,
+		char*, activeSensorIDs.length + storedUnsentSensorPollCount);
+
+	_IoTLib_generate_url_payloads_for_newly_polled_sensor_data(urlPayloadsBuffer, activeSensorIDs, newRawSensorDataBuffer);
+	_IoTLib_generate_url_payloads_for_all_unsent_polled_sensor_data(urlPayloadsBuffer);
+	
+	for (size_t i = 0; i < urlPayloadsBuffer.length; i++)
+	{
+		IoTLib_uploadFunction(urlPayloadsBuffer.array[i]);
+	}
+}
+
+void _IoTLib_generate_url_payloads_for_newly_polled_sensor_data(struct IoTLib_MngdArray_String urlPayloadsBuffer,
+	const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
 {
 	for (size_t i = 0 ; i < activeSensorIDs.length; i++)
 	{
@@ -204,5 +221,21 @@ void _IoTLib_generate_url_payloads_for_each_active_sensor(struct IoTLib_MngdArra
 		void* rawSensorData = IoTLib_MKV_get(&rawSensorDataBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
 
 		IoTLib_MA_add(&urlPayloadsBuffer, generateUploadPayloadFunc(rawSensorData), IoTLib_MngdArray_String);
+	}
+}
+
+void _IoTLib_generate_url_payloads_for_all_unsent_polled_sensor_data(struct IoTLib_MngdArray_String urlPayloadsBuffer)
+{
+	struct IoTLib_RawSensorDataAndSensorID* unsentSensorPollDataBuffer = IoTLib_retrieveAllUnsentDataFunc();
+
+	// Append stored unsent data to buffer.
+	for (size_t urlBufPos = urlPayloadsBuffer.length, unsentBufPos = 0;
+		urlBufPos < urlPayloadsBuffer.capacity; urlBufPos++, unsentBufPos++)
+	{
+		struct IoTLib_RawSensorDataAndSensorID currentUnsentSensorData = unsentSensorPollDataBuffer[unsentBufPos];
+		char* (*generateUrlPayloadFunc)(void* rawData) = IoTLib_MKV_get(
+			&IoTLib_generateUploadPayloadFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, currentUnsentSensorData.id);
+
+		IoTLib_MA_add(&urlPayloadsBuffer, generateUrlPayloadFunc(currentUnsentSensorData.data), IoTLib_MngdArray_String);
 	}
 }

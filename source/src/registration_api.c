@@ -83,8 +83,8 @@ void IoTLib_run()
 	IoTLib_initialize_managed_key_value_array(stringSensorDataBuffer,
 		struct IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, char*, rawSensorDataBuffer.length);
 
-	_IoTLib_read_and_store_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
-	_IoTLib_get_string_represenations_of_raw_sensor_data(stringSensorDataBuffer, rawSensorDataBuffer);
+	_IoTLib_poll_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
+	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(rawSensorDataBuffer, activeSensorIDs);
 
 	_IoTLib_set_last_poll_time_for_active_sensors(activeSensorIDs);
 }
