@@ -23,6 +23,7 @@ extern struct IoTLib_Vector IoTLib_waitlist_funcs;
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
 extern time_t (*IoTLib_retrieveLastUploadTimeFunc)();
+extern void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
 extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
@@ -266,3 +267,9 @@ void _IoTLib_wait_for_tasks_to_complete()
 		}
 	}
 }
+
+void _IoTLib_store_current_time_as_upload_time()
+{
+	IoTLib_storeLastUploadTimeFunc(_IoTLib_get_current_time());
+}
+

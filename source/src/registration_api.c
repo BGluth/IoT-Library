@@ -86,6 +86,8 @@ void IoTLib_run()
 	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(rawSensorDataBuffer, activeSensorIDs);
 
 	_IoTLib_wait_for_tasks_to_complete();
+
+	_IoTLib_store_current_time_as_upload_time();
 }
 
 void IoTLib_sensor_registration_init()
