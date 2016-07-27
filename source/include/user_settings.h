@@ -5,10 +5,10 @@
 
 enum IoTLib_DebugLevel
 {
-	IoTLib_Debg_NONE = 0,
-	IoTLib_Debg_ERROR = 1,
-	IoTLib_Debg_ERROR_WARNING = 2,
-	IoTLib_Debg_ERROR_WARNING_INFO = 3
+	IoTLib_DEBGLVL_NONE = 0,
+	IoTLib_DEBGLVL_ERROR = 1,
+	IoTLib_DEBGLVL_ERROR_WARNING = 2,
+	IoTLib_DEBGLVL_ERROR_WARNING_INFO = 3
 };
 
 #define IoTLib_SENSOR_COUNT 1
@@ -22,7 +22,7 @@ enum IoTLib_DebugLevel
 
 #define IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES 1
 
-#define IoTLib_DEBUG_MESSAGE_LEVEL IoTLib_Debg_ERROR_WARNING_INFO
+#define IoTLib_DEBUG_MESSAGE_LEVEL IoTLib_DEBGLVL_ERROR_WARNING_INFO
 #define IoTLib_DEBUG_HALT_ON_ERROR 1
 
 // Helper macros (No touching!)
