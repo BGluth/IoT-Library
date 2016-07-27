@@ -35,4 +35,8 @@ void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVAr
 void _IoTLib_wait_for_tasks_to_complete();
 void _IoTLib_store_current_time_as_upload_time();
 
+// Debugging related functions
+void _IoTLib_debug_active_sensor_names_and_ids(struct IoTLib_MngdArray_SnsrID activeSensors);
+void _IoTLib_debug_print_current_time();
+void _IoTLib_debug_print_unsent_stored_sensor_polls(size_t storedUnsentPollCount);
 #endif

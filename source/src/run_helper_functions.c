@@ -1,5 +1,6 @@
 #include "run_helper_functions.h"
 
+#include "debug_functions.h"
 #include "vector.h"
 #include "public_structs.h"
 #include "util_functions.h"
@@ -40,22 +41,35 @@ void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDD
 
 void _IoTLib_call_sensor_init_functions()
 {
+	IoTLib_debug_info("Calling sensor init functions. (Count: %i)", IoTLib_initFunctions.length);
 	_IoTLib_call_all_void_functions_in_buffer(IoTLib_initFunctions);
 }
 
 void _IoTLib_call_sensor_power_on_functions()
 {
+	IoTLib_debug_info("Calling sensor power on functions. (Count: %i)", IoTLib_powerOnFunctions.length);
 	_IoTLib_call_all_void_functions_in_buffer(IoTLib_powerOnFunctions);
 }
 
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
+	{
+		IoTLib_debug_info("Filtering active sensors by current temp...");
 		_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
+		IoTLib_debug_info("Active sensors after temp filter:");
+		_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
+	}
 	else
+	{
+		IoTLib_debug_info("Not filtering by current temp. All sensors active.");
 		_IoTLib_add_all_sensors_to_active_sensors(activeSensorIDs);
+	}
 
+	IoTLib_debug_info("Filtering out sensors by last poll time and sensor frequency...");
 	_IoTLib_filter_out_sensors_by_poll_frequency(activeSensorIDs);
+	IoTLib_debug_info("Sensors remaining after frequency filter:");
+	_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
 }
 
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
@@ -141,6 +155,8 @@ void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_bu
 void _IoTLib_poll_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer,
 	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
+	IoTLib_debug_info("Polling data from sensors...");
+
 	for (size_t i = 0; i < rawSensorDataBuffer.capacity; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
@@ -168,6 +184,9 @@ void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVAr
 
 void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
+	_IoTLib_debug_print_current_time();
+	IoTLib_debug_info("Setting all active sensors last poll time to current time...");
+
 	for (size_t i = 0; i < activeSensorIDs.length; i++)
 	{
 		void (*setSensorLastPolledTimeFunc)(time_t lastPollTime) = IoTLib_MKV_get(
@@ -181,10 +200,12 @@ void _IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(
 {
 	if (_IoTLib_enough_time_elapsed_for_upload())
 	{
+		IoTLib_debug_info("Uploading all new and stored polled sensor results...");
 		_IoTLib_upload_all_pending_sensor_data(newRawSensorDataBuffer, activeSensorIDs);
 	}
 	else
 	{
+		IoTLib_debug_info("Not enough time elapsed for uploading. Storing new data locally...");
 		_IoTLib_store_newly_polled_sensor_data_locally(newRawSensorDataBuffer);
 	}
 }
@@ -199,12 +220,15 @@ void _IoTLib_upload_all_pending_sensor_data(const struct IoTLib_MngdKVArray_Snsr
 	const struct IoTLib_MngdArray_SnsrID activeSensorIDs)
 {
 	size_t storedUnsentSensorPollCount = IoTLib_getStoredUnsentDataCountFunc();
+	_IoTLib_debug_print_unsent_stored_sensor_polls(storedUnsentSensorPollCount);
+
 	IoTLib_initialize_managed_array(urlPayloadsBuffer, struct IoTLib_MngdArray_String,
 		char*, activeSensorIDs.length + storedUnsentSensorPollCount);
 
 	_IoTLib_generate_url_payloads_for_newly_polled_sensor_data(urlPayloadsBuffer, activeSensorIDs, newRawSensorDataBuffer);
 	_IoTLib_generate_url_payloads_for_all_unsent_polled_sensor_data(urlPayloadsBuffer);
 	
+	IoTLib_debug_info("Uploading %i URL payloads...", urlPayloadsBuffer.length);
 	for (size_t i = 0; i < urlPayloadsBuffer.length; i++)
 	{
 		IoTLib_uploadFunction(urlPayloadsBuffer.array[i]);
@@ -214,6 +238,8 @@ void _IoTLib_upload_all_pending_sensor_data(const struct IoTLib_MngdKVArray_Snsr
 void _IoTLib_generate_url_payloads_for_newly_polled_sensor_data(struct IoTLib_MngdArray_String urlPayloadsBuffer,
 	const struct IoTLib_MngdArray_SnsrID activeSensorIDs, const struct IoTLib_MngdKVArray_SnsrIDDataPtr rawSensorDataBuffer)
 {
+	IoTLib_debug_info("Generating URL payloads for all new sensor polls...");
+
 	for (size_t i = 0 ; i < activeSensorIDs.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
@@ -254,8 +280,12 @@ void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVAr
 
 void _IoTLib_wait_for_tasks_to_complete()
 {
+	IoTLib_debug_info("Checking if there are any tasks on the wait list needing to be completed...");
 	while (IoTLib_waitlist_funcs.count > 0)
 	{
+		IoTLib_debug_info("%i tasks waiting to be completed.", IoTLib_waitlist_funcs.count);
+		IoTLib_debug_info("Attempting to complete %i tasks...", IoTLib_waitlist_funcs.count);
+
 		for (size_t i = 0; i < IoTLib_waitlist_funcs.count; i++)
 		{
 			bool (*checkAndHandleTaskCompletionFunc)() = IoTLib_vector_get(&IoTLib_waitlist_funcs, i);
@@ -266,6 +296,34 @@ void _IoTLib_wait_for_tasks_to_complete()
 			}
 		}
 	}
+}
+
+// Debug helper functions:
+void _IoTLib_debug_active_sensor_names_and_ids(struct IoTLib_MngdArray_SnsrID activeSensorIDs)
+{
+	for (size_t i = 0; i < activeSensorIDs.length; i++)
+	{
+		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
+		char* currentSensorName = IoTLib_MKV_get(&IoTLib_sensorIDsAndNames, IoTLib_MngdKVArray_SnsrIDString, currentSensorID);
+
+		IoTLib_debug_info("Name - %s  ID - %i", currentSensorName, currentSensorID);
+	}
+}
+
+void _IoTLib_debug_print_current_time()
+{
+	time_t currentTime = _IoTLib_get_current_time();
+	struct tm* currentDateTime = localtime(&currentTime);
+	IoTLib_debug_info("Current time: "
+		"(day - %i, month - %i, year - %i, hour - %i, minute - %i, second - %i)",
+		currentDateTime->tm_mday, currentDateTime->tm_mon, currentDateTime->tm_year,
+		currentDateTime->tm_hour, currentDateTime->tm_min, currentDateTime->tm_sec);
+}
+
+void _IoTLib_debug_print_unsent_stored_sensor_polls(size_t storedUnsentPollCount)
+{
+	if (storedUnsentPollCount > 0)
+		IoTLib_debug_info("Generating URL payloads for %i unsent stored sensor polls...", storedUnsentPollCount);
 }
 
 void _IoTLib_store_current_time_as_upload_time()
