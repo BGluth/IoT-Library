@@ -17,9 +17,12 @@ libDir = ".." </> "source"
 libSrcDir = libDir </> "src"
 libInclDir = libDir </> "include"
 libInclLocDir = libDir </> "include (local)"
+
 testSrcDir = "src"
 testInclDir = "include"
-headerDirs = [testInclDir, libInclDir, libInclLocDir] -- Non-recursive for now
+testShrdLibsDir = "lib"
+testShrdLibsInclDir = testShrdLibsDir </> "include"
+headerDirs = [testInclDir, testShrdLibsInclDir, libInclDir, libInclLocDir] -- Non-recursive for now
 
 preDefinedMacros = ["DEBUG"]
 
