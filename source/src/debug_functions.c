@@ -8,9 +8,9 @@
 
 extern void (*IoTLib_debugFunction)(char* debugString);
 
-static char* _IoTLib_info_prefix = "INFO: ";
-static char* _IoTLib_warning_prefix = "WARNING: ";
-static char* _IoTLib_error_prefix = "ERROR: ";
+static const char* _IoTLib_info_prefix = "INFO: ";
+static const char* _IoTLib_warning_prefix = "WARNING: ";
+static const char* _IoTLib_error_prefix = "ERROR: ";
 
 const static size_t _IoTLib_info_prefix_size = 6;
 const static size_t _IoTLib_warning_prefix_size = 9;

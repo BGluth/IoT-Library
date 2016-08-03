@@ -1,6 +1,10 @@
 #ifndef IoTLib_MANAGED_KEY_VALUE_ARRAY_MACROS_H
 #define IoTLib_MANAGED_KEY_VALUE_ARRAY_MACROS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -114,5 +118,9 @@
 	keyType managedKeyValueArrayName##_keys[arrayCapacity]; \
 	dataType managedKeyValueArrayName##_values[arrayCapacity]; \
 	managedKeyValueArrayType managedKeyValueArrayName = {.keys = managedKeyValueArrayName##_keys, .values = managedKeyValueArrayName##_values, .length = 0, .capacity = arrayCapacity}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

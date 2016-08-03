@@ -1,6 +1,10 @@
 #ifndef IoTLib_RUN_HELPER_FUNCTIONS_H
 #define IoTLib_RUN_HELPER_FUNCTIONS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <time.h>
@@ -39,4 +43,9 @@ void _IoTLib_store_current_time_as_upload_time();
 void _IoTLib_debug_active_sensor_names_and_ids(struct IoTLib_MngdArray_SnsrID activeSensors);
 void _IoTLib_debug_print_current_time();
 void _IoTLib_debug_print_unsent_stored_sensor_polls(size_t storedUnsentPollCount);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

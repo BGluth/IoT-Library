@@ -1,6 +1,10 @@
 #ifndef IoTLib_SENSOR_REGISTRAITION_H
 #define IoTLib_SENSOR_REGISTRAITION_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <time.h>
@@ -31,5 +35,9 @@ void IoTLib_set_store_last_upload_time_function(void (*storeLastUploadTimeFunc)(
 void IoTLib_set_retrieve_last_upload_time_function(time_t (*retireveLastUploadTimeFunc)());
 void IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(struct IoTLib_RawSensorDataAndSensorID* (*retrieveAllUnsentDataFunc)());
 void IoTLib_register_get_stored_unsent_data_count_function(size_t (*getStoredUnsentDataCountFunc)());
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

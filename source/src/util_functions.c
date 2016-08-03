@@ -1,6 +1,6 @@
 #include "util_functions.h"
 
-#include <stdint.h>
+#include <limits.h>
 #include <stddef.h>
 
 #include "managed_array_definitions.h"
@@ -12,7 +12,7 @@ double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 {
 	time_t rawCurrentTime = _IoTLib_get_current_time();
 	struct tm* currentTime = localtime(&rawCurrentTime);
-	double nearestTimeUntilNextSensorPoll = INTMAX_MAX;
+	double nearestTimeUntilNextSensorPoll = INT_MAX;
 
 	for (size_t i = 0; i < IoTLib_retrieveSensorLastPolledTimeFunctions.length; i++)
 	{

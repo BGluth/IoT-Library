@@ -1,6 +1,10 @@
 #ifndef IoTLib_MACROS_H
 #define IoTLib_MACROS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdarg.h>
 
 #define IoTLib_define_SensorID_with_data_struct(structName, dataType) \
@@ -15,5 +19,9 @@
 	va_start(extraArgs, message); \
 	code; \
 	va_end(extraArgs)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

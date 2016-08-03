@@ -1,6 +1,10 @@
 #ifndef IoTLib_MANAGED_ARRAY_MACROS_H
 #define IoTLib_MANAGED_ARRAY_MACROS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "macro_util.h"
 #include <stddef.h>
 
@@ -40,5 +44,9 @@ _IoTLib_declare_managed_array_functions(managedArrayTypeName, dataType)
 #define IoTLib_initialize_managed_array(managedArrayName, managedArrayType, dataType, arrayCapacity) \
 	dataType managedArrayName##_data_Array[arrayCapacity]; \
 	managedArrayType managedArrayName = {.array = managedArrayName##_data_Array, .length = 0, .capacity = arrayCapacity}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
