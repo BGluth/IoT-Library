@@ -6,11 +6,11 @@ import Development.Shake.Util
 import Data.List
 import Data.Maybe
 
-import System.Directory
+import qualified System.Directory
 
-gcc = "gcc"
+gcc = "g++"
 executableBuildFlags = ["-Wall", "-g"]
-objectBuildFlags = ["-std=c11"]
+objectBuildFlags = ["-std=c++11"]
 testRunnerPath = buildDir </> "runTests" <.> exe
 
 buildDir = "_build"
@@ -31,6 +31,8 @@ objsTestFolderPrefix = buildDir </> "test"
 objsLibFolderPrefix = buildDir </> "lib"
 
 
+validSourceFileExtensions = [".c", ".cpp"]
+
 -- Pre-calculated varaibles (Don't touch! :D)
 headerDirsWithFlag = map ("-iquote" ++) headerDirs
 preDefinedMacrosWithFlags = map ("-D " ++) preDefinedMacros
@@ -45,9 +47,8 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
     
     testRunnerPath %> \out -> do
         putNormal ("Building " ++ testRunnerPath)
-        testSrcs <- getDirectoryFiles testSrcDir ["//*.c"]
+        testSrcs <- getDirectoryFiles testSrcDir ["//*.c", "//*.cpp"]
         libSrcs <- getDirectoryFiles libSrcDir ["//*.c"]
-        
         
         let testObjs = map (convertPathSrcToObj (objsTestFolderPrefix)) testSrcs
         let libObjs = map (convertPathSrcToObj (objsLibFolderPrefix)) libSrcs
@@ -60,7 +61,7 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
         
     "//*.o" %> \out -> do
         let normalizedOut = normalise out -- HACK
-        let matchingSrc = findSrcForObj normalizedOut
+        matchingSrc <- liftIO $ findSrcForObj normalizedOut
         let srcDependencies = normalizedOut -<.> "m"
         
         putNormal ("Building obj: " ++ normalizedOut)
@@ -72,10 +73,28 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
 convertPathSrcToObj extraFolder path =
     extraFolder </> (path -<.> "o")
     
-findSrcForObj objPath
+findSrcForObj objPath = do
+    let srcDir = getSrcDirForObjPath objPath
+    srcFileName <- findMatchingSrcForObjInSrcDir objPath srcDir
+    return (srcDir </> srcFileName)
+
+getSrcDirForObjPath objPath
     | beginningOfPath == objsTestFolderPrefix = testSrcDir </> unprefixedDirectory
     | beginningOfPath == objsLibFolderPrefix = libSrcDir </> unprefixedDirectory
     where 
         beginningOfPath = takeDirectory1 objPath </> takeDirectory1 (dropDirectory1 objPath) -- UGLY!!!
-        unprefixedDirectory = (dropDirectory1 (dropDirectory1 objPath)) -<.> "c" -- Ughh!
+        unprefixedDirectory = takeDirectory (dropDirectory1 (dropDirectory1 objPath)) -- Ughh!
+        
+findMatchingSrcForObjInSrcDir objPath srcDir = do
+    let matchingSrcFileNameNoExt = takeBaseName objPath
+    dirContents <- System.Directory.getDirectoryContents srcDir
+    let matchingFileNames = filter (\fileInDir -> (dropExtension fileInDir) == matchingSrcFileNameNoExt) dirContents
+    let firstMatchingFile = returnFirstFileInListMatchingExtension matchingFileNames validSourceFileExtensions
+    return firstMatchingFile
+    
+returnFirstFileInListMatchingExtension filePathList validExtensions = 
+    let 
+        extensionIsValid = (\extension -> elem extension validExtensions)
+    in
+        head (filter (\filePath -> extensionIsValid (takeExtension filePath)) filePathList) -- Should really only ever be one, but I'm not handling this error because I don't have time!
     
