@@ -5,9 +5,6 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include "general_macros.h"
-
 void _IoTLib_check_for_unset_functions_if_debugging();
 
 // Debug functions

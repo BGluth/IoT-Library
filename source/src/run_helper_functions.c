@@ -271,10 +271,10 @@ void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVAr
 {
 	for (size_t i = 0; i < newRawSensorDataBuffer.length; i++)
 	{
-		void (*storeNewlyPolledSensorData)(void* rawSensorData) = (void (*)(void*)) IoTLib_MKV_get(
+		void (*storeNewlyPolledSensorDataFunc)(void* rawSensorData) = (void (*)(void*)) IoTLib_MKV_get(
 			&IoTLib_storeUnsentDataFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, newRawSensorDataBuffer.keys[i]);
 
-		storeNewlyPolledSensorData(newRawSensorDataBuffer.values[i]);
+		storeNewlyPolledSensorDataFunc(newRawSensorDataBuffer.values[i]);
 	}
 }
 
@@ -305,7 +305,7 @@ void _IoTLib_debug_active_sensor_names_and_ids(struct IoTLib_MngdArray_SnsrID ac
 	for (size_t i = 0; i < activeSensorIDs.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = activeSensorIDs.array[i];
-		char* currentSensorName = IoTLib_MKV_get(&IoTLib_sensorIDsAndNames, IoTLib_MngdKVArray_SnsrIDString, currentSensorID);
+		const char* currentSensorName = IoTLib_MKV_get(&IoTLib_sensorIDsAndNames, IoTLib_MngdKVArray_SnsrIDString, currentSensorID);
 
 		IoTLib_debug_info("Name - %s  ID - %i", currentSensorName, currentSensorID);
 	}
