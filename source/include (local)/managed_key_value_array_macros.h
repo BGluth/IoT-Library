@@ -52,18 +52,29 @@
 		return IoTLib_managed_key_value_array_index_is_valid_index(index); \
 	}
 
+#define _IoTLib_declare_managed_key_value_array_clear_function(managedKeyValueArrayTypeName) \
+	void managedKeyValueArrayTypeName##_clear(struct managedKeyValueArrayTypeName* keyValueArray)
+
+#define _IoTLib_define_managed_key_value_array_clear_function(managedKeyValueArrayTypeName) \
+	void managedKeyValueArrayTypeName##_clear(struct managedKeyValueArrayTypeName* keyValueArray) \
+	{ \
+		keyValueArray->length = 0; \
+	}
+
 
 #define _IoTLib_declare_managed_key_value_array_functions(managedKeyValueArrayTypeName, keyType, valueType) \
 	_IoTLib_declare_managed_key_value_array_insert_function(managedKeyValueArrayTypeName, keyType, valueType); \
 	_IoTLib_declare_managed_key_value_array_get_function(managedKeyValueArrayTypeName, keyType, valueType); \
 	_IoTLib_declare_managed_key_value_array_try_get_function(managedKeyValueArrayTypeName, keyType, valueType); \
-	_IoTLib_declare_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType)
+	_IoTLib_declare_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType); \
+	_IoTLib_declare_managed_key_value_array_clear_function(managedKeyValueArrayTypeName)
 
 #define IoTLib_define_managed_key_value_array_functions(managedKeyValueArrayTypeName, keyType, valueType) \
 	_IoTLib_define_managed_key_value_array_insert_function(managedKeyValueArrayTypeName, keyType, valueType); \
 	_IoTLib_define_managed_key_value_array_get_function(managedKeyValueArrayTypeName, keyType, valueType); \
 	_IoTLib_define_managed_key_value_array_try_get_function(managedKeyValueArrayTypeName, keyType, valueType); \
-	_IoTLib_define_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType)
+	_IoTLib_define_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType); \
+	_IoTLib_define_managed_key_value_array_clear_function(managedKeyValueArrayTypeName)
 
 
 #define IoTLib_define_functions_for_key_type(keyType, getKeyIndexFunc) \
@@ -94,6 +105,9 @@
 
 #define IoTLib_MKV_contains_key(managedKeyValueArrayRef, managedKeyValueArrayTypeName, key) \
 	managedKeyValueArrayTypeName##_containsKey(managedKeyValueArrayRef, key)
+
+#define IoTLib_MKV_clear(managedKeyValueArrayRef, managedKeyValueArrayTypeName) \
+	managedKeyValueArrayTypeName##_clear(managedKeyValueArrayRef)
 
 
 #define IoTLib_initialize_managed_key_value_array(managedKeyValueArrayName, managedKeyValueArrayType, keyType, dataType, arrayCapacity) \
