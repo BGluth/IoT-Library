@@ -15,7 +15,7 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_pollFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_rawDataToStringFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeSensorLastPolledTimeFunctions;
-extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeDataUnsentFunctions;
+extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeUnsentDataFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
@@ -272,7 +272,7 @@ void _IoTLib_store_newly_polled_sensor_data_locally(const struct IoTLib_MngdKVAr
 	for (size_t i = 0; i < newRawSensorDataBuffer.length; i++)
 	{
 		void (*storeNewlyPolledSensorData)(void* rawSensorData) = IoTLib_MKV_get(
-			&IoTLib_storeDataUnsentFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, newRawSensorDataBuffer.keys[i]);
+			&IoTLib_storeUnsentDataFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, newRawSensorDataBuffer.keys[i]);
 
 		storeNewlyPolledSensorData(newRawSensorDataBuffer.values[i]);
 	}

@@ -9,6 +9,7 @@
 #include "public_structs.h"
 
 void IoTLib_run();
+void IoTLib_sensor_registration_init();
 
 IoTLib_SensorID IoTLib_register_sensor(char* sensorName);
 void IoTLib_register_sensor_init_function(IoTLib_SensorID sensorID, void (*sensorInitFunc)());

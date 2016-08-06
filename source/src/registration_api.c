@@ -27,7 +27,7 @@ IoTLib_initialize_managed_key_value_array(IoTLib_powerOnFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_NUM_POWER_ON_FUNCTIONS);
 
-IoTLib_initialize_managed_key_value_array(IoTLib_storeDataUnsentFunctions,
+IoTLib_initialize_managed_key_value_array(IoTLib_storeUnsentDataFunctions,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr,
 		IoTLib_SensorID, void*, IoTLib_SENSOR_COUNT);
 
@@ -145,7 +145,7 @@ void IoTLib_register_sensor_store_unsent_data_function(IoTLib_SensorID sensorID,
 {
 	_IoTLib_debug_print_registration_function_call("store unsent data", sensorID);
 
-	IoTLib_MKV_insert(&IoTLib_storeDataUnsentFunctions,
+	IoTLib_MKV_insert(&IoTLib_storeUnsentDataFunctions,
 		IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, storeUnsentFunc);
 }
 
@@ -305,10 +305,10 @@ void _IoTLib_check_for_unset_functions_if_debugging()
 				" (actual: %i sensor count: %i)", IoTLib_pollFunctions.length, IoTLib_sensorIDsAndNames.length);
 		}
 
-		if (IoTLib_storeDataUnsentFunctions.length < IoTLib_sensorIDsAndNames.length)
+		if (IoTLib_storeUnsentDataFunctions.length < IoTLib_sensorIDsAndNames.length)
 		{
 			IoTLib_debug_error("Less store unsent data functions than sensors!"
-				" (actual: %i sensor count: %i)", IoTLib_storeDataUnsentFunctions.length, IoTLib_sensorIDsAndNames.length);
+				" (actual: %i sensor count: %i)", IoTLib_storeUnsentDataFunctions.length, IoTLib_sensorIDsAndNames.length);
 		}
 
 		if (IoTLib_generateUploadPayloadFunctions.length < IoTLib_sensorIDsAndNames.length)
