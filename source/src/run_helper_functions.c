@@ -76,7 +76,7 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 {
 	// TODO: What if temperature sensor has a power on function?
 	void* (*rawTemperatureSensorReadFunc)() = (void* (*)()) IoTLib_MKV_get(
-		&IoTLib_initFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_tempSnsrIDAndRawToFloatFunc.id);
+		&IoTLib_pollFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_tempSnsrIDAndRawToFloatFunc.id);
 	float (*temperatureRawToFloatFunc)(void* rawTempSnsrData) = (float (*)(void*)) IoTLib_tempSnsrIDAndRawToFloatFunc.data;
 
 	void* rawTemperatureData = rawTemperatureSensorReadFunc();
