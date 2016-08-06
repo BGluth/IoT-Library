@@ -57,7 +57,7 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSenso
 	{
 		IoTLib_debug_info("Filtering active sensors by current temp...");
 		_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
-		IoTLib_debug_info("Active sensors after temp filter:");
+		IoTLib_debug_info("Active sensor count after temp filter: %i", activeSensorIDs.length);
 		_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
 	}
 	else
@@ -68,7 +68,7 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID activeSenso
 
 	IoTLib_debug_info("Filtering out sensors by last poll time and sensor frequency...");
 	_IoTLib_filter_out_sensors_by_poll_frequency(activeSensorIDs);
-	IoTLib_debug_info("Sensors remaining after frequency filter:");
+	IoTLib_debug_info("Active sensor count after frequency filter: %i", activeSensorIDs.length);
 	_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
 }
 

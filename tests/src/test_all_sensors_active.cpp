@@ -26,7 +26,7 @@ FAKE_VALUE_FUNC(time_t, retrieve_last_polled_time_function);
 FAKE_VOID_FUNC(store_last_polled_time_function, time_t);
 
 FAKE_VOID_FUNC(upload_function, char*);
-FAKE_VALUE_FUNC(float, poll_temp_function, void*);
+FAKE_VALUE_FUNC(float, raw_to_temp_function, void*);
 FAKE_VALUE_FUNC(time_t, retrieve_last_upload_time_function);
 FAKE_VOID_FUNC(store_last_upload_time_function, time_t);
 FAKE_VALUE_FUNC(struct IoTLib_RawSensorDataAndSensorID*, retrieve_all_stored_unsent_sensor_data_function);
@@ -47,7 +47,7 @@ static void init_fakes()
 	retrieve_last_polled_time_function_fake.return_val = 0;
 
 	retrieve_last_upload_time_function_fake.return_val = 0;
-	poll_temp_function_fake.return_val = environmentTempValue;
+	raw_to_temp_function_fake.return_val = environmentTempValue;
 
 	//time_fake.return_val = 0;
 }
@@ -76,7 +76,7 @@ static void reset_fakes()
 	RESET_FAKE(store_last_polled_time_function);
 
 	RESET_FAKE(upload_function);
-	RESET_FAKE(poll_temp_function);
+	RESET_FAKE(raw_to_temp_function);
 	RESET_FAKE(retrieve_last_upload_time_function);
 	RESET_FAKE(store_last_upload_time_function);
 	RESET_FAKE(retrieve_all_stored_unsent_sensor_data_function);
@@ -94,7 +94,7 @@ static void register_fake_functions(size_t numSensors)
 {
 	IoTLib_register_upload_function(upload_function);
 	IoTLib_register_debug_function(debug_function);
-	IoTLib_register_temp_sensorid_and_poll_temp_function(tempSensorID, poll_temp_function);
+	IoTLib_register_temp_sensorid_and_raw_to_temp_function(tempSensorID, raw_to_temp_function);
 	IoTLib_register_store_last_upload_time_function(store_last_upload_time_function);
 	IoTLib_register_retrieve_last_upload_time_function(retrieve_last_upload_time_function);
 	IoTLib_register_get_stored_unsent_data_count_function(get_stored_unsent_data_count_function);

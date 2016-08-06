@@ -208,9 +208,9 @@ void IoTLib_register_debug_function(void (*debugFunction)(char* debugString))
 	IoTLib_debugFunction = debugFunction;
 }
 
-void IoTLib_register_temp_sensorid_and_poll_temp_function(IoTLib_SensorID tempSensorID, float (*pollTempSensorFloatFunc)(void* rawSensorData))
+void IoTLib_register_temp_sensorid_and_raw_to_temp_function(IoTLib_SensorID tempSensorID, float (*rawToTempFunc)(void* rawSensorData))
 {
-	struct IoTLib_SnsrIDDataPtr sensorIDWithReadFunc = {.id = tempSensorID, .data = (void*)pollTempSensorFloatFunc};
+	struct IoTLib_SnsrIDDataPtr sensorIDWithReadFunc = {.id = tempSensorID, .data = (void*)rawToTempFunc};
 	IoTLib_tempSnsrIDAndRawToFloatFunc = sensorIDWithReadFunc;
 }
 
