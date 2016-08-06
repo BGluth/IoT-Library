@@ -6,6 +6,7 @@
 #include "catch.hpp"
 #include "fff.h"
 
+#include "testing_utils.hpp"
 #include "user_settings.h"
 #include "registration_api.h"
 
@@ -55,14 +56,9 @@ static void init_fakes()
 static void reset()
 {
 	printf("Resetting...\n");
-	reset_global_lists();
+	clear_registered_data();
 	reset_fakes();
 	init_fakes();
-}
-
-static void reset_global_lists()
-{
-	// TODO:
 }
 
 static void reset_fakes()
@@ -103,6 +99,7 @@ static void register_fake_functions(size_t numSensors)
 	{
 		IoTLib_SensorID sensorID = IoTLib_register_sensor(sensorNames[i]);
 		IoTLib_register_sensor_init_function(sensorID, init_function);
+		IoTLib_register_sensor_poll_function(sensorID, sensor_poll_function);
 		IoTLib_register_sensor_power_on_function(sensorID, power_on_function);
 		IoTLib_register_sensor_store_unsent_data_function(sensorID, store_unsent_data_function);
 		IoTLib_register_sensor_generate_upload_payload_function(sensorID, generate_upload_payload_function);
@@ -148,7 +145,7 @@ static void set_two_sensors_min_or_max_temp_to_value(
 // ACTUAL TESTS!!!! YAY!
 ////////////////////////
 
-SCENARIO("Run function calls registered functions appropiately")
+SCENARIO("Run function calls registered functions appropriately")
 {
 	reset();
 
@@ -160,6 +157,8 @@ SCENARIO("Run function calls registered functions appropiately")
 		GIVEN("Two sensors have max operating temperatures below the current environment temperature")
 		{
 			set_two_sensors_max_temp_below_current_temp();
+			IoTLib_sensor_registration_init();
+			IoTLib_run();
 
 			THEN("Only 1 sensor should be polled.")
 			{
@@ -169,7 +168,9 @@ SCENARIO("Run function calls registered functions appropiately")
 
 		GIVEN("Two sensors have min operating temperatures above the current environment temperature")
 		{
-			set_two_sensors_max_temp_below_current_temp();
+			set_two_sensors_min_temp_below_current_temp();
+			IoTLib_sensor_registration_init();
+			IoTLib_run();
 
 			THEN("Only 1 sensor should be polled.")
 			{
