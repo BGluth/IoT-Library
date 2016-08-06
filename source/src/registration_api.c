@@ -77,15 +77,15 @@ void IoTLib_run()
 
 	_IoTLib_call_sensor_init_functions();
 	_IoTLib_call_sensor_power_on_functions();
-	_IoTLib_determine_active_sensors(activeSensorIDs);
+	_IoTLib_determine_active_sensors(&activeSensorIDs);
 
 	IoTLib_initialize_managed_key_value_array(rawSensorDataBuffer,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
 
-	_IoTLib_poll_data_from_sensors(rawSensorDataBuffer, activeSensorIDs);
-	_IoTLib_set_last_poll_time_for_active_sensors(activeSensorIDs);
+	_IoTLib_poll_data_from_sensors(&rawSensorDataBuffer, &activeSensorIDs);
+	_IoTLib_set_last_poll_time_for_active_sensors(&activeSensorIDs);
 
-	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(rawSensorDataBuffer, activeSensorIDs);
+	_IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(&rawSensorDataBuffer, &activeSensorIDs);
 
 	_IoTLib_wait_for_tasks_to_complete();
 
