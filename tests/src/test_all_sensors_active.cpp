@@ -17,7 +17,7 @@ static float hotEnvironmentTempValue = 40;
 static float coldEnvironemtTempValue = -40;
 static const char* sensorNames[3] = {"Sensor1", "Sensor2", "Sensor3"};
 static IoTLib_SensorID sensorIDs[3];
-static IoTLib_SensorID tempSensorID = 1;
+static const IoTLib_SensorID tempSensorID = 1;
 
 
 FAKE_VOID_FUNC(init_function);

@@ -1,3 +1,5 @@
+#include "testing_utils.hpp"
+
 #include <stddef.h>
 
 #include "registration_api.h"
