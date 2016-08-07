@@ -18,6 +18,7 @@ static float coldEnvironemtTempValue = -40;
 static const char* sensorNames[3] = {"Sensor1", "Sensor2", "Sensor3"};
 static IoTLib_SensorID sensorIDs[3];
 static const IoTLib_SensorID tempSensorID = 1;
+static const int defaultSensorPollTime = 30;
 
 
 FAKE_VOID_FUNC(init_function);
@@ -35,7 +36,8 @@ FAKE_VOID_FUNC(store_last_upload_time_function, time_t);
 FAKE_VALUE_FUNC(struct IoTLib_RawSensorDataAndSensorID*, retrieve_all_stored_unsent_sensor_data_function);
 FAKE_VALUE_FUNC(size_t, get_stored_unsent_data_count_function);
 
-//FAKE_VALUE_FUNC(time_t, time);
+FAKE_VALUE_FUNC(time_t, time, time_t*);
+
 
 static void debug_function(char* debugString)
 {
@@ -47,12 +49,9 @@ static void init_fakes()
 {
 	sensor_poll_function_fake.return_val = &fake_sensor_poll_return_value;
 	generate_upload_payload_function_fake.return_val = fake_generate_upload_payload_return_value;
-	retrieve_last_polled_time_function_fake.return_val = 0;
 
 	retrieve_last_upload_time_function_fake.return_val = 0;
 	set_environment_temp(normalEnvironmentTempValue);
-
-	//time_fake.return_val = 0;
 }
 
 static void reset()
@@ -115,11 +114,12 @@ static void register_fake_functions(size_t numSensors)
 	set_two_sensors_max_temp_below_hot_env_temp();
 	set_two_sensors_min_temps_above_cold_env_temp();
 	set_third_sensor_min_max_temp_within_boundaries_of_hot_and_cold_temp();
+
+	set_all_sensors_to_have_same_poll_frequency(numSensors, defaultSensorPollTime);
 }
 
-static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors)
+static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors, int frequency)
 {
-	int frequency = 30;
 	for (size_t i = 0; i < numSensors; i++)
 	{
 		IoTLib_register_sensor_poll_frequency(sensorIDs[i], frequency);
@@ -161,6 +161,16 @@ static void set_two_sensors_min_or_max_temp_to_value(
 	}
 }
 
+static void set_current_time_so_default_poll_time_sensors_poll_and_device_uploads()
+{
+	set_current_time(std::max(defaultSensorPollTime, IoTLib_MIN_SECONDS_BETWEEN_UPLOADS) + 1);
+}
+
+static void set_current_time(int currentTime)
+{
+	time_fake.return_val = currentTime;
+}
+
 ////////////////////////
 // ACTUAL TESTS!!!! YAY!
 ////////////////////////
@@ -172,16 +182,17 @@ SCENARIO("Run function calls registered functions appropriately")
 	GIVEN("All needed functions have been registered for 3 sensors")
 	{
 		register_fake_functions(3);
-		set_all_sensors_to_have_same_poll_frequency(3);
+		set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 
 		GIVEN("Two sensors have max operating temperatures below the current environment temperature")
 		{
 			set_environment_temp(hotEnvironmentTempValue);
 			init_and_run();
 
-			THEN("Only 1 sensor should be polled.")
+			THEN("Only 2 sensors should be polled.")
 			{
-				REQUIRE(sensor_poll_function_fake.call_count == 1);
+				// Two sensors since we need to poll the temp sensor to get the current env temp.
+				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 		}
 
@@ -190,10 +201,12 @@ SCENARIO("Run function calls registered functions appropriately")
 			set_environment_temp(coldEnvironemtTempValue);
 			init_and_run();
 
-			THEN("Only 1 sensor should be polled.")
+			THEN("Only 2 sensors should be polled.")
 			{
-				REQUIRE(sensor_poll_function_fake.call_count == 1);
+				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 		}
 	}
+
+
 }

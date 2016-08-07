@@ -136,7 +136,7 @@ bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSensorWasLastPolled 
 		IoTLib_MngdKVArray_SnsrIDInt, sensorID);
 	double timeSinceSensorWasLastPolled = difftime(_IoTLib_get_current_time(), timeSensorWasLastPolled);
 
-	return timeSensorWasLastPolled > sensorReadFrequency;
+	return timeSinceSensorWasLastPolled > sensorReadFrequency;
 }
 
 void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(size_t indexOfSensorToSwap,
@@ -149,7 +149,8 @@ void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_bu
 	}
 
 	activeSensors->array[indexOfSensorToSwap] = activeSensors->array[activeSensors->length];
-	activeSensors->length--;
+	if (activeSensors->length > 0)
+		activeSensors->length--;
 }
 
 void _IoTLib_poll_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr* rawSensorDataBuffer,
