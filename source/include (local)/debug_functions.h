@@ -2,6 +2,7 @@
 #define IoTLib_DEBUG_FUNCTIONS_H
 
 #include <stddef.h>
+#include <stdarg.h>
 
 void IoTLib_debug_info(const char* message, ...);
 void IoTLib_debug_warning(const char* message, ...);

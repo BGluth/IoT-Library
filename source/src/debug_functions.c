@@ -1,7 +1,6 @@
 #include "debug_functions.h"
 
 #include <string.h>
-#include <stdarg.h>
 #include <stdio.h>
 
 #include "general_macros.h"
