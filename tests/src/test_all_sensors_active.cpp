@@ -12,7 +12,9 @@
 
 static int fake_sensor_poll_return_value = 42;
 static char fake_generate_upload_payload_return_value[] = "THIS IS A FAKE UPLOAD PAYLOAD!!! :D";
-static float environmentTempValue = 25;
+static float normalEnvironmentTempValue = 25;
+static float hotEnvironmentTempValue = 40;
+static float coldEnvironemtTempValue = -40;
 static const char* sensorNames[3] = {"Sensor1", "Sensor2", "Sensor3"};
 static IoTLib_SensorID sensorIDs[3];
 static IoTLib_SensorID tempSensorID = 1;
@@ -48,7 +50,7 @@ static void init_fakes()
 	retrieve_last_polled_time_function_fake.return_val = 0;
 
 	retrieve_last_upload_time_function_fake.return_val = 0;
-	raw_to_temp_function_fake.return_val = environmentTempValue;
+	set_environment_temp(normalEnvironmentTempValue);
 
 	//time_fake.return_val = 0;
 }
@@ -108,6 +110,10 @@ static void register_fake_functions(size_t numSensors)
 
 		sensorIDs[i] = sensorID;
 	}
+
+	set_two_sensors_max_temp_below_hot_env_temp();
+	set_two_sensors_min_temps_above_cold_env_temp();
+	set_third_sensor_min_max_temp_within_boundaries_of_hot_and_cold_temp();
 }
 
 static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors)
@@ -119,16 +125,29 @@ static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors)
 	}
 }
 
-static void set_two_sensors_max_temp_below_current_temp()
+static void set_environment_temp(float temp)
 {
-	float maxOperatingTempBelowEnvironmentTemp = environmentTempValue - 10;
-	set_two_sensors_min_or_max_temp_to_value(IoTLib_register_sensor_max_operating_temp, maxOperatingTempBelowEnvironmentTemp);
+	raw_to_temp_function_fake.return_val = temp;
 }
 
-static void set_two_sensors_min_temp_below_current_temp()
+
+
+static void set_two_sensors_max_temp_below_hot_env_temp()
 {
-	float minOperatingTempAboveEnvironmentTemp = environmentTempValue + 10;
-	set_two_sensors_min_or_max_temp_to_value(IoTLib_register_sensor_min_operating_temp, minOperatingTempAboveEnvironmentTemp);
+	float maxOperatingTempBelowHotEnvironmentTemp = hotEnvironmentTempValue - 10;
+	set_two_sensors_min_or_max_temp_to_value(IoTLib_register_sensor_max_operating_temp, maxOperatingTempBelowHotEnvironmentTemp);
+}
+
+static void set_two_sensors_min_temps_above_cold_env_temp()
+{
+	float minOperatingTempAboveColdEnvironmentTemp = normalEnvironmentTempValue + 10;
+	set_two_sensors_min_or_max_temp_to_value(IoTLib_register_sensor_min_operating_temp, minOperatingTempAboveColdEnvironmentTemp);
+}
+
+static void set_third_sensor_min_max_temp_within_boundaries_of_hot_and_cold_temp()
+{
+	IoTLib_register_sensor_max_operating_temp(sensorIDs[2], 100);
+	IoTLib_register_sensor_min_operating_temp(sensorIDs[2], -100);
 }
 
 static void set_two_sensors_min_or_max_temp_to_value(
@@ -156,9 +175,8 @@ SCENARIO("Run function calls registered functions appropriately")
 
 		GIVEN("Two sensors have max operating temperatures below the current environment temperature")
 		{
-			set_two_sensors_max_temp_below_current_temp();
-			IoTLib_sensor_registration_init();
 			IoTLib_run();
+			set_environment_temp(hotEnvironmentTempValue);
 
 			THEN("Only 1 sensor should be polled.")
 			{
@@ -168,9 +186,8 @@ SCENARIO("Run function calls registered functions appropriately")
 
 		GIVEN("Two sensors have min operating temperatures above the current environment temperature")
 		{
-			set_two_sensors_min_temp_below_current_temp();
-			IoTLib_sensor_registration_init();
 			IoTLib_run();
+			set_environment_temp(coldEnvironemtTempValue);
 
 			THEN("Only 1 sensor should be polled.")
 			{
