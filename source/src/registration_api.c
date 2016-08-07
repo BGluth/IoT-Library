@@ -61,7 +61,7 @@ IoTLib_initialize_managed_key_value_array(IoTLib_sensorMaxTemps,
 
 struct IoTLib_Vector IoTLib_waitlist_funcs;
 
-struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc = {-1, NULL};
+struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc = {0, NULL};
 void (*IoTLib_uploadFunction)(char* urlUploadString) = NULL;
 void (*IoTLib_debugFunction)(char* debugString) = NULL;
 void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime) = NULL;
@@ -249,7 +249,7 @@ void _IoTLib_check_for_unset_functions_if_debugging()
 {
 	if (DEBUG)
 	{
-		if (IoTLib_tempSnsrIDAndRawToFloatFunc.id == -1 && IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
+		if (IoTLib_tempSnsrIDAndRawToFloatFunc.data == NULL && IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
 			IoTLib_debug_error("No sensor specified for polling outside temperature!");
 
 		if (IoTLib_uploadFunction == NULL)
