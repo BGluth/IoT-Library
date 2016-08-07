@@ -175,8 +175,8 @@ SCENARIO("Run function calls registered functions appropriately")
 
 		GIVEN("Two sensors have max operating temperatures below the current environment temperature")
 		{
-			IoTLib_run();
 			set_environment_temp(hotEnvironmentTempValue);
+			init_and_run();
 
 			THEN("Only 1 sensor should be polled.")
 			{
@@ -186,8 +186,8 @@ SCENARIO("Run function calls registered functions appropriately")
 
 		GIVEN("Two sensors have min operating temperatures above the current environment temperature")
 		{
-			IoTLib_run();
 			set_environment_temp(coldEnvironemtTempValue);
+			init_and_run();
 
 			THEN("Only 1 sensor should be polled.")
 			{

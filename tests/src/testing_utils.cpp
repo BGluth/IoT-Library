@@ -1,4 +1,6 @@
 #include <stddef.h>
+
+#include "registration_api.h"
 #include "managed_key_value_array_macros.h"
 #include "managed_array_definitions.h"
 #include "vector.h"
@@ -48,4 +50,10 @@ void clear_registered_data()
 	IoTLib_retrieveLastUploadTimeFunc = NULL;
 	IoTLib_retrieveAllUnsentDataFunc = NULL;
 	IoTLib_getStoredUnsentDataCountFunc = NULL;
+}
+
+void init_and_run()
+{
+	IoTLib_sensor_registration_init();
+	IoTLib_run();
 }
