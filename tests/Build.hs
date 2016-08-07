@@ -10,6 +10,7 @@ import System.Directory
 
 gcc = "gcc"
 executableBuildFlags = ["-Wall", "-g"]
+objectBuildFlags = ["-std=c11"]
 testRunnerPath = buildDir </> "runTests" <.> exe
 
 buildDir = "_build"
@@ -65,7 +66,7 @@ main = shakeArgs shakeOptions{shakeFiles="_build"} $ do
         putNormal ("Building obj: " ++ normalizedOut)
         putNormal ("Matching src: " ++ matchingSrc)
         
-        () <- cmd gcc "-c" [matchingSrc] "-o" [normalizedOut] "-MMD -MF" [srcDependencies] headerDirsWithFlag preDefinedMacrosWithFlags
+        () <- cmd gcc "-c" [matchingSrc] "-o" [normalizedOut] objectBuildFlags "-MMD -MF" [srcDependencies] headerDirsWithFlag preDefinedMacrosWithFlags
         needMakefileDependencies srcDependencies
         
 convertPathSrcToObj extraFolder path =
