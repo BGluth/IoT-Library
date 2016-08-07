@@ -95,6 +95,7 @@ static void register_fake_functions(size_t numSensors)
 	IoTLib_register_temp_sensorid_and_raw_to_temp_function(tempSensorID, raw_to_temp_function);
 	IoTLib_register_store_last_upload_time_function(store_last_upload_time_function);
 	IoTLib_register_retrieve_last_upload_time_function(retrieve_last_upload_time_function);
+	IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(retrieve_all_stored_unsent_sensor_data_function);
 	IoTLib_register_get_stored_unsent_data_count_function(get_stored_unsent_data_count_function);
 
 	for (int i = 0; i < numSensors; i++)
