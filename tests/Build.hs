@@ -9,8 +9,8 @@ import Data.Maybe
 import qualified System.Directory
 
 gcc = "g++"
-executableBuildFlags = ["-Wall", "-g"]
-objectBuildFlags = ["-std=c++11"]
+executableBuildFlags = ["-Wall"]
+objectBuildFlags = ["-g", "-std=c++11"]
 testRunnerPath = buildDir </> "runTests" <.> exe
 
 buildDir = "_build"
