@@ -318,7 +318,7 @@ void _IoTLib_debug_print_current_time()
 	struct tm* currentDateTime = localtime(&currentTime);
 	IoTLib_debug_info("Current time: "
 		"(day - %i, month - %i, year - %i, hour - %i, minute - %i, second - %i)",
-		currentDateTime->tm_mday, currentDateTime->tm_mon, currentDateTime->tm_year,
+		currentDateTime->tm_mday, currentDateTime->tm_mon, currentDateTime->tm_year + 1900,
 		currentDateTime->tm_hour, currentDateTime->tm_min, currentDateTime->tm_sec);
 }
 
