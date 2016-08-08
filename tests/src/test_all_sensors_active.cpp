@@ -252,7 +252,7 @@ SCENARIO("Run function calls registered functions appropriately")
 			}
 		}
 
-		WHEN("enough time has passed for all sensors to be polled")
+		WHEN("enough time has passed for an upload and sensor polls")
 		{
 			init_and_run();
 			THEN("all sensors should be polled")
@@ -260,16 +260,18 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(sensor_poll_function_fake.call_count == numSensors + 1);
 			}
 
-			THEN("All init and power on functions ")
+			THEN("all init and power on functions should be called")
 			{
 				REQUIRE(init_function_fake.call_count == IoTLib_SENSOR_COUNT);
 				REQUIRE(power_on_function_fake.call_count == IoTLib_NUM_POWER_ON_FUNCTIONS);
 			}
-		}
 
-		WHEN("enough time has passed for an upload and sensor polls")
-		{
-			init_and_run();
+			THEN("the store and retrieve last upload time function should be called")
+			{
+				REQUIRE(store_last_upload_time_function_fake.call_count == 1);
+				REQUIRE(retrieve_last_upload_time_function_fake.call_count == 1);
+			}
+
 			THEN("URL payloads should be generated and the upload function should be called for new and stored unsent polled sensor data")
 			{
 				REQUIRE(generate_upload_payload_function_fake.call_count == numSensors + unsentDataCount);
@@ -306,6 +308,11 @@ SCENARIO("Run function calls registered functions appropriately")
 			{
 				REQUIRE(generate_upload_payload_function_fake.call_count == 0);
 				REQUIRE(upload_function_fake.call_count == 0);
+			}
+
+			THEN("the current time should not be stored as the last update time")
+			{
+				REQUIRE(store_last_upload_time_function_fake.call_count == 1);
 			}
 		}
 	}
