@@ -12,11 +12,18 @@
 
 static int fake_sensor_poll_return_value = 42;
 static char fake_generate_upload_payload_return_value[] = "THIS IS A FAKE UPLOAD PAYLOAD!!! :D";
+
 static float normalEnvironmentTempValue = 25;
 static float hotEnvironmentTempValue = 40;
 static float coldEnvironemtTempValue = -40;
-static const char* sensorNames[3] = {"Sensor1", "Sensor2", "Sensor3"};
-static IoTLib_SensorID sensorIDs[3];
+static const size_t numSensors = 3;
+static const size_t unsentDataCount = numSensors;
+static const char* sensorNames[numSensors] = {"Sensor1", "Sensor2", "Sensor3"};
+static IoTLib_SensorID sensorIDs[numSensors];
+
+static int fake_stored_unsent_polled_raw_value = 9000;
+static IoTLib_RawSensorDataAndSensorID stored_unsent_polled_values[unsentDataCount];
+
 static const IoTLib_SensorID tempSensorID = 1;
 static const int defaultSensorPollTime = 30;
 
@@ -51,6 +58,8 @@ static void init_fakes()
 	generate_upload_payload_function_fake.return_val = fake_generate_upload_payload_return_value;
 
 	retrieve_last_upload_time_function_fake.return_val = 0;
+	retrieve_all_stored_unsent_sensor_data_function_fake.return_val = stored_unsent_polled_values;
+	get_stored_unsent_data_count_function_fake.return_val = unsentDataCount;
 	set_environment_temp(normalEnvironmentTempValue);
 }
 
@@ -108,6 +117,7 @@ static void register_fake_functions(size_t numSensors)
 		IoTLib_register_sensor_retrieve_last_polled_time_function(sensorID, retrieve_last_polled_time_function);
 		IoTLib_register_sensor_store_last_polled_time_function(sensorID, store_last_polled_time_function);
 
+		stored_unsent_polled_values[i] = (IoTLib_RawSensorDataAndSensorID){sensorID, (void*)&fake_stored_unsent_polled_raw_value};
 		sensorIDs[i] = sensorID;
 	}
 
@@ -227,14 +237,14 @@ SCENARIO("Run function calls registered functions appropriately")
 		WHEN("enough time has passed for an upload and sensor polls")
 		{
 			init_and_run();
-			THEN("URL payloads should be generated for all sensors")
+			THEN("URL payloads should be generated for new and stored unsent polled sensor data")
 			{
-				REQUIRE(generate_upload_payload_function_fake.call_count == 3);
+				REQUIRE(generate_upload_payload_function_fake.call_count == numSensors + unsentDataCount);
 			}
 
-			THEN("the upload function should be called once for each sensor")
+			THEN("the upload function should be called once for each new and stored unsent polled sensor data")
 			{
-				REQUIRE(upload_function_fake.call_count == 3);
+				REQUIRE(upload_function_fake.call_count == numSensors + unsentDataCount);
 			}
 		}
 	}
