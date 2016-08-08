@@ -197,13 +197,6 @@ SCENARIO("Run function calls registered functions appropriately")
 		register_fake_functions(3);
 		set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 
-		THEN("all sensor init and power on functions are called")
-		{
-			init_and_run();
-			REQUIRE(init_function_fake.call_count == IoTLib_SENSOR_COUNT);
-			REQUIRE(power_on_function_fake.call_count == IoTLib_NUM_POWER_ON_FUNCTIONS);
-		}
-
 		WHEN("two sensors have max operating temperatures below the current environment temperature")
 		{
 			set_environment_temp(hotEnvironmentTempValue);
@@ -212,6 +205,12 @@ SCENARIO("Run function calls registered functions appropriately")
 			{
 				// Two sensors since we need to poll the temp sensor to get the current env temp.
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
+			}
+
+			THEN("only 1 init and poweron functions should be called")
+			{
+				REQUIRE(init_function_fake.call_count == 1);
+				REQUIRE(power_on_function_fake.call_count == 1);
 			}
 		}
 
@@ -222,6 +221,12 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("only 2 sensors should be polled")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
+			}
+
+			THEN("only 1 init and poweron functions should be called")
+			{
+				REQUIRE(init_function_fake.call_count == 1);
+				REQUIRE(power_on_function_fake.call_count == 1);
 			}
 		}
 
@@ -239,6 +244,12 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(upload_function_fake.call_count == 0);
 				REQUIRE(generate_upload_payload_function_fake.call_count == 0);
 			}
+
+			THEN("no init or poweron functions should be called")
+			{
+				REQUIRE(init_function_fake.call_count == 0);
+				REQUIRE(power_on_function_fake.call_count == 0);
+			}
 		}
 
 		WHEN("enough time has passed for all sensors to be polled")
@@ -247,6 +258,12 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("all sensors should be polled")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == numSensors + 1);
+			}
+
+			THEN("All init and power on functions ")
+			{
+				REQUIRE(init_function_fake.call_count == IoTLib_SENSOR_COUNT);
+				REQUIRE(power_on_function_fake.call_count == IoTLib_NUM_POWER_ON_FUNCTIONS);
 			}
 		}
 
