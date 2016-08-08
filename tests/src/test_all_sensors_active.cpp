@@ -184,43 +184,41 @@ SCENARIO("Run function calls registered functions appropriately")
 		register_fake_functions(3);
 		set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 
-		GIVEN("Two sensors have max operating temperatures below the current environment temperature")
+		WHEN("two sensors have max operating temperatures below the current environment temperature")
 		{
 			set_environment_temp(hotEnvironmentTempValue);
 			init_and_run();
-
-			THEN("Only 2 sensors should be polled.")
+			THEN("only 2 sensors should be polled")
 			{
 				// Two sensors since we need to poll the temp sensor to get the current env temp.
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 		}
 
-		GIVEN("Two sensors have min operating temperatures above the current environment temperature")
+		WHEN("Two sensors have min operating temperatures above the current environment temperature")
 		{
 			set_environment_temp(coldEnvironemtTempValue);
 			init_and_run();
-
-			THEN("Only 2 sensors should be polled.")
+			THEN("only 2 sensors should be polled")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 		}
 
-		GIVEN("Not enough time has passed for any sensors to be polled")
+		WHEN("not enough time has passed for any sensors to be polled")
 		{
 			set_current_time(0);
 			init_and_run();
-			THEN("No sensors should be polled")
+			THEN("no sensors should be polled")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 0);
 			}
 		}
 
-		GIVEN("enough time has passed for all sensors to be polled")
+		WHEN("enough time has passed for all sensors to be polled")
 		{
 			init_and_run();
-			THEN("All sensors should be polled")
+			THEN("all sensors should be polled")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 4);
 			}
