@@ -30,25 +30,28 @@ extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFun
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
 
 // Assuming the compiler will inline this function.
-void _IoTLib_call_all_void_functions_in_buffer(struct IoTLib_MngdKVArray_SnsrIDDataPtr* voidFunctionBuffer)
+void _IoTLib_lookup_and_call_all_void_functions_in_MKV_with_sensorIDs(
+	struct IoTLib_MngdArray_SnsrID* sensorIDs,
+	struct IoTLib_MngdKVArray_SnsrIDDataPtr* voidFunctionBuffer)
 {
-	for (size_t i = 0; i < voidFunctionBuffer->length; i++)
+	for (size_t i = 0; i < sensorIDs->length; i++)
 	{
-		void (*voidFunction)() = (void (*)()) voidFunctionBuffer->values[i];
+		void (*voidFunction)() = (void (*)()) IoTLib_MKV_get(
+			voidFunctionBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, sensorIDs->array[i]);
 		voidFunction();
 	}
 }
 
-void _IoTLib_call_sensor_init_functions()
+void _IoTLib_call_init_functions_for_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
 {
-	IoTLib_debug_info("Calling sensor init functions. (Count: %i)", IoTLib_initFunctions.length);
-	_IoTLib_call_all_void_functions_in_buffer(&IoTLib_initFunctions);
+	IoTLib_debug_info("Calling sensor init functions. (Count: %i)", activeSensorIDs->length);
+	_IoTLib_lookup_and_call_all_void_functions_in_MKV_with_sensorIDs(activeSensorIDs, &IoTLib_initFunctions);
 }
 
-void _IoTLib_call_sensor_power_on_functions()
+void _IoTLib_call_power_on_functions_for_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
 {
-	IoTLib_debug_info("Calling sensor power on functions. (Count: %i)", IoTLib_powerOnFunctions.length);
-	_IoTLib_call_all_void_functions_in_buffer(&IoTLib_powerOnFunctions);
+	IoTLib_debug_info("Calling sensor power on functions.");
+	_IoTLib_lookup_and_call_all_void_functions_in_MKV_with_sensorIDs(activeSensorIDs, &IoTLib_powerOnFunctions);
 }
 
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)

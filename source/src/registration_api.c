@@ -75,9 +75,9 @@ void IoTLib_run()
 
 	IoTLib_initialize_managed_array(activeSensorIDs, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 
-	_IoTLib_call_sensor_init_functions();
-	_IoTLib_call_sensor_power_on_functions();
 	_IoTLib_determine_active_sensors(&activeSensorIDs);
+	_IoTLib_call_init_functions_for_active_sensors(&activeSensorIDs);
+	_IoTLib_call_power_on_functions_for_active_sensors(&activeSensorIDs);
 
 	IoTLib_initialize_managed_key_value_array(rawSensorDataBuffer,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
