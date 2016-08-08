@@ -200,6 +200,13 @@ SCENARIO("Run function calls registered functions appropriately")
 		register_fake_functions(3);
 		set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 
+		THEN("all sensor init and power on functions are called")
+		{
+			init_and_run();
+			REQUIRE(init_function_fake.call_count == IoTLib_SENSOR_COUNT);
+			REQUIRE(power_on_function_fake.call_count == IoTLib_NUM_POWER_ON_FUNCTIONS);
+		}
+
 		WHEN("two sensors have max operating temperatures below the current environment temperature")
 		{
 			set_environment_temp(hotEnvironmentTempValue);
