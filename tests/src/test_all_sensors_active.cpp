@@ -176,6 +176,12 @@ static void set_current_time_so_default_poll_time_sensors_poll_and_device_upload
 	set_current_time(std::max(defaultSensorPollTime, IoTLib_MIN_SECONDS_BETWEEN_UPLOADS) + 1);
 }
 
+static void set_current_time_so_default_poll_time_sensors_poll_but_device_does_not_upload()
+{
+	// Will not work if the diff between these two is <= 1.
+	set_current_time(std::min(defaultSensorPollTime, IoTLib_MIN_SECONDS_BETWEEN_UPLOADS) + 1);
+}
+
 static void set_current_time(int currentTime)
 {
 	time_fake.return_val = currentTime;
@@ -245,6 +251,17 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("the upload function should be called once for each new and stored unsent polled sensor data")
 			{
 				REQUIRE(upload_function_fake.call_count == numSensors + unsentDataCount);
+			}
+		}
+
+		WHEN("not enough time has passed for an upload")
+		{
+			set_current_time_so_default_poll_time_sensors_poll_but_device_does_not_upload();
+
+			init_and_run();
+			THEN("the store unsent data function should be called once for each sensor poll")
+			{
+				REQUIRE(store_unsent_data_function_fake.call_count == numSensors);
 			}
 		}
 	}
