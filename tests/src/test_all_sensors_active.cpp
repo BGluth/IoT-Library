@@ -229,6 +229,12 @@ SCENARIO("Run function calls registered functions appropriately")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 0);
 			}
+
+			THEN("no URL payloads should be generated and the upload function should not be called")
+			{
+				REQUIRE(upload_function_fake.call_count == 0);
+				REQUIRE(generate_upload_payload_function_fake.call_count == 0);
+			}
 		}
 
 		WHEN("enough time has passed for all sensors to be polled")
@@ -243,15 +249,12 @@ SCENARIO("Run function calls registered functions appropriately")
 		WHEN("enough time has passed for an upload and sensor polls")
 		{
 			init_and_run();
-			THEN("URL payloads should be generated for new and stored unsent polled sensor data")
+			THEN("URL payloads should be generated and the upload function should be called for new and stored unsent polled sensor data")
 			{
 				REQUIRE(generate_upload_payload_function_fake.call_count == numSensors + unsentDataCount);
-			}
-
-			THEN("the upload function should be called once for each new and stored unsent polled sensor data")
-			{
 				REQUIRE(upload_function_fake.call_count == numSensors + unsentDataCount);
 			}
+
 		}
 
 		WHEN("not enough time has passed for an upload")
