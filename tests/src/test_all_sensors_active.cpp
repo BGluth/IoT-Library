@@ -216,6 +216,15 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(sensor_poll_function_fake.call_count == 0);
 			}
 		}
+
+		GIVEN("enough time has passed for all sensors to be polled")
+		{
+			init_and_run();
+			THEN("All sensors should be polled")
+			{
+				REQUIRE(sensor_poll_function_fake.call_count == 4);
+			}
+		}
 	}
 
 
