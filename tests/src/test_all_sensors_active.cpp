@@ -65,7 +65,6 @@ static void init_fakes()
 
 static void reset()
 {
-	printf("Resetting...\n");
 	clear_registered_data();
 	reset_fakes();
 	init_fakes();
@@ -87,8 +86,6 @@ static void reset_fakes()
 	RESET_FAKE(store_last_upload_time_function);
 	RESET_FAKE(retrieve_all_stored_unsent_sensor_data_function);
 	RESET_FAKE(get_stored_unsent_data_count_function);
-
-	//RESET_FAKE()
 }
 
 static void force_update_function_to_run()
@@ -249,7 +246,7 @@ SCENARIO("Run function calls registered functions appropriately")
 			init_and_run();
 			THEN("all sensors should be polled")
 			{
-				REQUIRE(sensor_poll_function_fake.call_count == 4);
+				REQUIRE(sensor_poll_function_fake.call_count == numSensors + 1);
 			}
 		}
 
@@ -285,7 +282,7 @@ SCENARIO("Run function calls registered functions appropriately")
 
 			THEN("the sensors should still be polled")
 			{
-				REQUIRE(sensor_poll_function_fake.call_count == 4);
+				REQUIRE(sensor_poll_function_fake.call_count == numSensors + 1);
 			}
 
 			THEN("URL payloads should not be generated and the upload function should not be called")
