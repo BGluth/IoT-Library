@@ -22,6 +22,7 @@ void _IoTLib_call_sensor_init_functions();
 void _IoTLib_call_sensor_power_on_functions();
 bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID id);
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensors);
+void _IoTLib_swap_with_end_of_sensor_id_array(struct IoTLib_MngdArray_SnsrID* sensorIDArray, size_t currentIndex);
 void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);
 void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID* activeSensors);
 bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSinceLastDeviceRun , IoTLib_SensorID sensorID);

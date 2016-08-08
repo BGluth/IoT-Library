@@ -141,7 +141,7 @@ static void set_two_sensors_max_temp_below_hot_env_temp()
 
 static void set_two_sensors_min_temps_above_cold_env_temp()
 {
-	float minOperatingTempAboveColdEnvironmentTemp = normalEnvironmentTempValue + 10;
+	float minOperatingTempAboveColdEnvironmentTemp = coldEnvironemtTempValue + 10;
 	set_two_sensors_min_or_max_temp_to_value(IoTLib_register_sensor_min_operating_temp, minOperatingTempAboveColdEnvironmentTemp);
 }
 
@@ -204,6 +204,16 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("Only 2 sensors should be polled.")
 			{
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
+			}
+		}
+
+		GIVEN("Not enough time has passed for any sensors to be polled")
+		{
+			set_current_time(0);
+			init_and_run();
+			THEN("No sensors should be polled")
+			{
+				REQUIRE(sensor_poll_function_fake.call_count == 0);
 			}
 		}
 	}

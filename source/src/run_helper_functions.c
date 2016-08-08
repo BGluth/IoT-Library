@@ -53,23 +53,29 @@ void _IoTLib_call_sensor_power_on_functions()
 
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
 {
-	if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
-	{
-		IoTLib_debug_info("Filtering active sensors by current temp...");
-		_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
-		IoTLib_debug_info("Active sensor count after temp filter: %i", activeSensorIDs->length);
-		_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
-	}
-	else
-	{
-		IoTLib_debug_info("Not filtering by current temp. All sensors active.");
-		_IoTLib_add_all_sensors_to_active_sensors(activeSensorIDs);
-	}
+	_IoTLib_add_all_sensors_to_active_sensors(activeSensorIDs);
 
 	IoTLib_debug_info("Filtering out sensors by last poll time and sensor frequency...");
 	_IoTLib_filter_out_sensors_by_poll_frequency(activeSensorIDs);
 	IoTLib_debug_info("Active sensor count after frequency filter: %i", activeSensorIDs->length);
 	_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
+
+	if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
+	{
+		if (activeSensorIDs->length > 0)
+		{
+			IoTLib_debug_info("Filtering active sensors by current temp...");
+			_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
+			IoTLib_debug_info("Active sensor count after temp filter: %i", activeSensorIDs->length);
+			_IoTLib_debug_active_sensor_names_and_ids(activeSensorIDs);
+		}
+		else
+			IoTLib_debug_info("No sensors to filter by current temp.");
+	}
+	else
+	{
+		IoTLib_debug_info("Not filtering by current temp.");
+	}
 }
 
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
@@ -82,14 +88,20 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 	void* rawTemperatureData = rawTemperatureSensorReadFunc();
 	float currentTemperature = temperatureRawToFloatFunc(rawTemperatureData);
 
-	for (size_t i = 0; i < IoTLib_sensorIDsAndNames.length; i++)
+	for (int i = activeSensorIDs->length - 1; i >= 0; i--)
 	{
-		IoTLib_SensorID sensorID = IoTLib_sensorIDsAndNames.keys[i];
-		if (_IoTLib_sensor_can_operate_in_current_temperature(currentTemperature, sensorID))
+		IoTLib_SensorID sensorID = activeSensorIDs->array[i];
+		if (!_IoTLib_sensor_can_operate_in_current_temperature(currentTemperature, sensorID))
 		{
-			IoTLib_MA_add(activeSensorIDs, sensorID, IoTLib_MngdArray_SnsrID);
+			_IoTLib_swap_with_end_of_sensor_id_array(activeSensorIDs, i);
 		}
 	}
+}
+
+void _IoTLib_swap_with_end_of_sensor_id_array(struct IoTLib_MngdArray_SnsrID* sensorIDArray, size_t currentIndex)
+{
+	sensorIDArray->length--;
+	sensorIDArray->array[currentIndex] = sensorIDArray->array[sensorIDArray->length];
 }
 
 bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID sensorID)
