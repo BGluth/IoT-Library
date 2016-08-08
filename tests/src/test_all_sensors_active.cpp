@@ -255,9 +255,18 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(upload_function_fake.call_count == numSensors + unsentDataCount);
 			}
 
+			THEN("the retrieve unsent data function should be called")
+			{
+				REQUIRE(retrieve_all_stored_unsent_sensor_data_function_fake.call_count == 1);
+			}
+
+			THEN("no sensor data should be stored for later upload")
+			{
+				REQUIRE(store_unsent_data_function_fake.call_count == 0);
+			}
 		}
 
-		WHEN("not enough time has passed for an upload")
+		WHEN("not enough time has passed for an upload but enough for sensor polls")
 		{
 			set_current_time_so_default_poll_time_sensors_poll_but_device_does_not_upload();
 
@@ -265,6 +274,17 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("the store unsent data function should be called once for each sensor poll")
 			{
 				REQUIRE(store_unsent_data_function_fake.call_count == numSensors);
+			}
+
+			THEN("the sensors should still be polled")
+			{
+				REQUIRE(sensor_poll_function_fake.call_count == 4);
+			}
+
+			THEN("URL payloads should not be generated and the upload function should not be called")
+			{
+				REQUIRE(generate_upload_payload_function_fake.call_count == 0);
+				REQUIRE(upload_function_fake.call_count == 0);
 			}
 		}
 	}
