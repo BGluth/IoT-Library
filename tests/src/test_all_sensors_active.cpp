@@ -223,6 +223,20 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(sensor_poll_function_fake.call_count == 4);
 			}
 		}
+
+		WHEN("enough time has passed for an upload and sensor polls")
+		{
+			init_and_run();
+			THEN("URL payloads should be generated for all sensors")
+			{
+				REQUIRE(generate_upload_payload_function_fake.call_count == 3);
+			}
+
+			THEN("the upload function should be called once for each sensor")
+			{
+				REQUIRE(upload_function_fake.call_count == 3);
+			}
+		}
 	}
 
 
