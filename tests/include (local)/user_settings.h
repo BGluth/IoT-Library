@@ -9,6 +9,8 @@
 
 // Library Settings
 
+#include <stdint.h>
+
 enum IoTLib_DebugLevel
 {
 	IoTLib_DEBGLVL_NONE = 0,
@@ -30,6 +32,8 @@ enum IoTLib_DebugLevel
 
 #define IoTLib_DEBUG_MESSAGE_LEVEL IoTLib_DEBGLVL_ERROR_WARNING
 #define IoTLib_DEBUG_HALT_ON_ERROR 0
+
+#define IoTLib_time_t uint64_t
 
 // Helper macros (No touching!)
 // **************************************
