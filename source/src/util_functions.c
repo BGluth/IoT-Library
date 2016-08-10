@@ -1,36 +1,44 @@
 #include "util_functions.h"
 
+#include <stdint.h>
 #include <limits.h>
 #include <stddef.h>
 
 #include "managed_array_definitions.h"
 
+extern IoTLib_time_t (*IoTLib_getCurrentTimeFunction)();
+extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime);
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
-extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
+extern struct IoTLib_MngdKVArray_SnsrIDTime_t IoTLib_sensorPollFrequencies;
 
-double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
+uint32_t IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 {
-	time_t rawCurrentTime = _IoTLib_get_current_time();
-	struct tm* currentTime = localtime(&rawCurrentTime);
-	double nearestTimeUntilNextSensorPoll = INT_MAX;
+	IoTLib_time_t currentTime = IoTLib_getCurrentTimeFunction();
+	uint32_t nearestTimeUntilNextSensorPoll = INT_MAX;
 
 	for (size_t i = 0; i < IoTLib_retrieveSensorLastPolledTimeFunctions.length; i++)
 	{
-		int currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
-			IoTLib_MngdKVArray_SnsrIDInt, IoTLib_retrieveSensorLastPolledTimeFunctions.keys[i]);
+		IoTLib_SensorID currentSensorID = IoTLib_retrieveSensorLastPolledTimeFunctions.keys[i];
+		IoTLib_time_t (*retrieveCurrentSensorLastPolledTimeFunc)() = (IoTLib_time_t (*)())
+			IoTLib_retrieveSensorLastPolledTimeFunctions.values[i];
 
-		struct tm timeOfCurrentSensorsNextPoll = *currentTime;
-		timeOfCurrentSensorsNextPoll.tm_sec += currentSensorFrequency;
-		double timeUntilCurrentSensorsNextPoll = difftime(mktime(&timeOfCurrentSensorsNextPoll), rawCurrentTime);
+		IoTLib_time_t sensorLastPollTime = retrieveCurrentSensorLastPolledTimeFunc();
+		IoTLib_time_t currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
+			IoTLib_MngdKVArray_SnsrIDTime_t, currentSensorID);
+		IoTLib_time_t timeOfCurrentSensorsNextPoll = sensorLastPollTime + currentSensorFrequency;
+		IoTLib_time_t timeUntilCurrentSensorsNextPoll = IoTLib_calculate_time_difference(
+			timeOfCurrentSensorsNextPoll, currentTime);
 
 		if (timeUntilCurrentSensorsNextPoll < nearestTimeUntilNextSensorPoll)
 			nearestTimeUntilNextSensorPoll = timeUntilCurrentSensorsNextPoll;
 	}
 
-	return nearestTimeUntilNextSensorPoll;
+	if (nearestTimeUntilNextSensorPoll < 0)
+		nearestTimeUntilNextSensorPoll = 0;
+	return IoTLib_convertTimeTypeToSecondsFunc(nearestTimeUntilNextSensorPoll);
 }
 
-time_t _IoTLib_get_current_time()
+IoTLib_time_t IoTLib_calculate_time_difference(IoTLib_time_t endTime, IoTLib_time_t startTime)
 {
-	return time(NULL);
+	return endTime - startTime;
 }

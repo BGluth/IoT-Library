@@ -7,8 +7,8 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdbool.h>
-#include <time.h>
 
+#include "user_settings.h"
 #include "typedefs.h"
 
 struct IoTLib_MngdArray_String;
@@ -18,6 +18,7 @@ struct IoTLib_MngdKVArray_SnsrIDString;
 
 void _IoTLib_lookup_and_call_all_void_functions_in_MKV(struct IoTLib_MngdKVArray_SnsrIDDataPtr* voidFunctionBuffer);
 
+void _IotLib_run_implementation();
 void _IoTLib_call_init_functions_for_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs);
 void _IoTLib_call_power_on_functions_for_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs);
 bool _IoTLib_sensor_can_operate_in_current_temperature(float currentTemperature, IoTLib_SensorID id);
@@ -25,8 +26,8 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 void _IoTLib_swap_with_end_of_sensor_id_array(struct IoTLib_MngdArray_SnsrID* sensorIDArray, size_t currentIndex);
 void _IoTLib_add_all_sensors_to_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);
 void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID* activeSensors);
-bool _IoTLib_enough_time_elapsed_for_sensor_poll(time_t timeSinceLastDeviceRun , IoTLib_SensorID sensorID);
-void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(size_t indexOfSensorToSwap, time_t timeSinceLastDeviceRun, struct IoTLib_MngdArray_SnsrID* activeSensors);
+bool _IoTLib_enough_time_elapsed_for_sensor_poll(IoTLib_time_t timeSinceLastDeviceRun, IoTLib_SensorID sensorID);
+void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(size_t indexOfSensorToSwap, IoTLib_time_t timeSinceLastDeviceRun, struct IoTLib_MngdArray_SnsrID* activeSensors);
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensors);
 void _IoTLib_poll_data_from_sensors(struct IoTLib_MngdKVArray_SnsrIDDataPtr* rawSensorDataBuffer, const struct IoTLib_MngdArray_SnsrID* activeSensorIDs);
 void _IoTLib_get_string_represenations_of_raw_sensor_data(struct IoTLib_MngdKVArray_SnsrIDString* stringSensorDataBuffer, const struct IoTLib_MngdKVArray_SnsrIDDataPtr* rawSensorDataBuffer);

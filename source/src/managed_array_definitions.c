@@ -10,4 +10,4 @@ IoTLib_define_managed_array_functions(IoTLib_MngdArray_String, char*);
 IoTLib_define_managed_key_value_array_functions(IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, const char*);
 IoTLib_define_managed_key_value_array_functions(IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*);
 IoTLib_define_managed_key_value_array_functions(IoTLib_MngdKVArray_SnsrIDFloat, IoTLib_SensorID, float);
-IoTLib_define_managed_key_value_array_functions(IoTLib_MngdKVArray_SnsrIDInt, IoTLib_SensorID, int);
+IoTLib_define_managed_key_value_array_functions(IoTLib_MngdKVArray_SnsrIDTime_t, IoTLib_SensorID, IoTLib_time_t);

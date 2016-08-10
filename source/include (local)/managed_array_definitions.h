@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 
-#include <time.h>
-
+#include "user_settings.h"
 #include "typedefs.h"
 #include "general_macros.h"
 #include "managed_array_macros.h"
@@ -20,7 +19,7 @@ IoTLib_define_managed_array_and_declare_functions(IoTLib_MngdArray_String, char*
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDString, IoTLib_SensorID, const char*);
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*);
 IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDFloat, IoTLib_SensorID, float);
-IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDInt, IoTLib_SensorID, int);
+IoTLib_define_managed_key_value_array_and_declare_functions(IoTLib_MngdKVArray_SnsrIDTime_t, IoTLib_SensorID, IoTLib_time_t);
 
 #ifdef __cplusplus
 }

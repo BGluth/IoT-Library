@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 
+#include "user_settings.h"
 #include "registration_api.h"
 #include "managed_key_value_array_macros.h"
 #include "managed_array_definitions.h"
@@ -16,7 +17,7 @@ extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_generateUploadPayloadFunct
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeUnsentDataFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_storeSensorLastPolledTimeFunctions;
-extern struct IoTLib_MngdKVArray_SnsrIDInt IoTLib_sensorPollFrequencies;
+extern struct IoTLib_MngdKVArray_SnsrIDTime_t IoTLib_sensorPollFrequencies;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMinTemps;
 extern struct IoTLib_MngdKVArray_SnsrIDFloat IoTLib_sensorMaxTemps;
 extern struct IoTLib_Vector IoTLib_waitlist_funcs;
@@ -24,8 +25,8 @@ extern struct IoTLib_Vector IoTLib_waitlist_funcs;
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 extern void (*IoTLib_debugFunction)(char* debugString);
-extern void (*IoTLib_storeLastUploadTimeFunc)(time_t lastActiveTime);
-extern time_t (*IoTLib_retrieveLastUploadTimeFunc)();
+extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_time_t lastActiveTime);
+extern IoTLib_time_t (*IoTLib_retrieveLastUploadTimeFunc)();
 extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
 
@@ -42,7 +43,7 @@ void clear_registered_data()
 	IoTLib_MKV_clear(&IoTLib_storeUnsentDataFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr);
 	IoTLib_MKV_clear(&IoTLib_sensorMinTemps, IoTLib_MngdKVArray_SnsrIDFloat);
 	IoTLib_MKV_clear(&IoTLib_sensorMaxTemps, IoTLib_MngdKVArray_SnsrIDFloat);
-	IoTLib_MKV_clear(&IoTLib_sensorPollFrequencies, IoTLib_MngdKVArray_SnsrIDInt);
+	IoTLib_MKV_clear(&IoTLib_sensorPollFrequencies, IoTLib_MngdKVArray_SnsrIDTime_t);
 	IoTLib_vector_free(&IoTLib_waitlist_funcs);
 
 	IoTLib_tempSnsrIDAndRawToFloatFunc = (struct IoTLib_SnsrIDDataPtr) {0, NULL};
