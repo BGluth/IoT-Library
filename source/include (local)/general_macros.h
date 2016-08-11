@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+#include "typedefs.h"
 #include <stdarg.h>
 
 #define IoTLib_define_SensorID_with_data_struct(structName, dataType) \
