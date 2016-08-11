@@ -86,11 +86,6 @@ static void reset_fakes()
 	RESET_FAKE(get_stored_unsent_data_count_function);
 }
 
-static void force_update_function_to_run()
-{
-	retrieve_last_upload_time_function_fake.return_val = IoTLib_MIN_SECONDS_BETWEEN_UPLOADS + 1;
-}
-
 static void register_fake_functions(size_t numSensors)
 {
 	IoTLib_register_upload_function(upload_function);
@@ -142,8 +137,6 @@ static void set_environment_temp(float temp)
 {
 	raw_to_temp_function_fake.return_val = temp;
 }
-
-
 
 static void set_two_sensors_max_temp_below_hot_env_temp()
 {
@@ -331,6 +324,4 @@ SCENARIO("Run function calls registered functions appropriately")
 			}
 		}
 	}
-
-
 }

@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include "user_settings.h"
 
 double IoTLib_calculate_time_in_seconds_until_next_sensor_polling();
