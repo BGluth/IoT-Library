@@ -1,3 +1,5 @@
+#include "user_settings.h"
+
 #include "registration_api.h"
 #include "registration_api_local.h"
 
