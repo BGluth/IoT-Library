@@ -71,7 +71,7 @@ IoTLib_time_t (*IoTLib_retrieveLastUploadTimeFunc)() = NULL;
 struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)() = NULL;
 size_t (*IoTLib_getStoredUnsentDataCountFunc)() = NULL;
 IoTLib_time_t (*IoTLib_getCurrentTimeFunction)() = NULL;
-uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime) = NULL;
+double (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime) = NULL;
 
 void IoTLib_run()
 {
@@ -227,7 +227,7 @@ void IoTLib_register_get_current_time_function(IoTLib_time_t (*getCurrentTimeFun
 	IoTLib_getCurrentTimeFunction = getCurrentTimeFunc;
 }
 
-void IoTLib_register_convert_time_type_to_seconds_func(uint32_t (*convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime))
+void IoTLib_register_convert_time_type_to_seconds_func(double (*convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime))
 {
 	IoTLib_convertTimeTypeToSecondsFunc = convertTimeTypeToSecondsFunc;
 }

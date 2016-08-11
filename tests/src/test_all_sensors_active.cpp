@@ -125,9 +125,9 @@ static void register_fake_functions(size_t numSensors)
 	set_all_sensors_to_have_same_poll_frequency(numSensors, defaultSensorPollTime);
 }
 
-static uint32_t convert_time_type_to_seconds(IoTLib_time_t rawTime)
+static double convert_time_type_to_seconds(IoTLib_time_t rawTime)
 {
-	return rawTime; // No conversion needed.
+	return (double)rawTime; // No conversion needed.
 }
 
 static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors, IoTLib_time_t frequency)

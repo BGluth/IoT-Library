@@ -35,7 +35,7 @@ void IoTLib_register_retrieve_last_upload_time_function(IoTLib_time_t (*retireve
 void IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(struct IoTLib_RawSensorDataAndSensorID* (*retrieveAllUnsentDataFunc)());
 void IoTLib_register_get_stored_unsent_data_count_function(size_t (*getStoredUnsentDataCountFunc)());
 void IoTLib_register_get_current_time_function(IoTLib_time_t (*getCurrentTimeFunc)());
-void IoTLib_register_convert_time_type_to_seconds_func(uint32_t (*convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime));
+void IoTLib_register_convert_time_type_to_seconds_func(double (*convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime));
 
 #ifdef __cplusplus
 }
