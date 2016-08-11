@@ -8,6 +8,7 @@
 
 #include "testing_utils.hpp"
 #include "registration_api.h"
+#include "util_functions.h"
 
 static int fake_sensor_poll_return_value = 42;
 static char fake_generate_upload_payload_return_value[] = "THIS IS A FAKE UPLOAD PAYLOAD!!! :D";
@@ -254,6 +255,11 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(init_function_fake.call_count == 0);
 				REQUIRE(power_on_function_fake.call_count == 0);
 			}
+
+			THEN("the time until the next sensor poll should be > 0")
+			{
+				REQUIRE(IoTLib_calculate_time_in_seconds_until_next_sensor_polling > 0);
+			}
 		}
 
 		WHEN("enough time has passed for an upload and sensor polls")
@@ -290,6 +296,11 @@ SCENARIO("Run function calls registered functions appropriately")
 			THEN("no sensor data should be stored for later upload")
 			{
 				REQUIRE(store_unsent_data_function_fake.call_count == 0);
+			}
+
+			THEN("the time until the next sensor poll should be 0")
+			{
+				REQUIRE(IoTLib_calculate_time_in_seconds_until_next_sensor_polling() == 0);
 			}
 		}
 
