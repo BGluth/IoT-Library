@@ -7,10 +7,11 @@ extern "C" {
 
 #include <stddef.h>
 
-typedef size_t IoTLib_SensorID;
-
 #ifdef __cplusplus
 }
 #endif
+
+
+typedef size_t IoTLib_SensorID;
 
 #endif
