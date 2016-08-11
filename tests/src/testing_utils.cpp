@@ -29,6 +29,8 @@ extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_time_t lastActiveTime);
 extern IoTLib_time_t (*IoTLib_retrieveLastUploadTimeFunc)();
 extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
+extern IoTLib_time_t (*IoTLib_getCurrentTimeFunction)();
+extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime);
 
 void clear_registered_data()
 {
@@ -53,6 +55,8 @@ void clear_registered_data()
 	IoTLib_retrieveLastUploadTimeFunc = NULL;
 	IoTLib_retrieveAllUnsentDataFunc = NULL;
 	IoTLib_getStoredUnsentDataCountFunc = NULL;
+	IoTLib_getCurrentTimeFunction = NULL;
+	IoTLib_convertTimeTypeToSecondsFunc = NULL;
 }
 
 void init_and_run()

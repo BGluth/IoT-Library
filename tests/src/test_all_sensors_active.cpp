@@ -1,5 +1,6 @@
 #include "test_all_sensors_active.hpp"
 
+#include <stdint.h>
 #include <string.h>
 
 #include "catch.hpp"
@@ -98,6 +99,8 @@ static void register_fake_functions(size_t numSensors)
 	IoTLib_register_retrieve_last_upload_time_function(retrieve_last_upload_time_function);
 	IoTLib_register_retrieve_all_stored_unsent_sensor_data_function(retrieve_all_stored_unsent_sensor_data_function);
 	IoTLib_register_get_stored_unsent_data_count_function(get_stored_unsent_data_count_function);
+	IoTLib_register_get_current_time_function(get_current_time_function);
+	IoTLib_register_convert_time_type_to_seconds_func(convert_time_type_to_seconds);
 
 	for (int i = 0; i < numSensors; i++)
 	{
@@ -119,6 +122,11 @@ static void register_fake_functions(size_t numSensors)
 	set_third_sensor_min_max_temp_within_boundaries_of_hot_and_cold_temp();
 
 	set_all_sensors_to_have_same_poll_frequency(numSensors, defaultSensorPollTime);
+}
+
+static uint32_t convert_time_type_to_seconds(IoTLib_time_t rawTime)
+{
+	return rawTime; // No conversion needed.
 }
 
 static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors, IoTLib_time_t frequency)
