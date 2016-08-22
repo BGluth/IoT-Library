@@ -244,8 +244,7 @@ void IoTLib_add_task_to_waitlist(bool (*checkAndHandleTaskCompletionFunc)())
 // Local functions:
 void _IoTLib_check_for_unset_functions_if_debugging()
 {
-	if (DEBUG)
-	{
+	#ifdef DEBUG
 		if (IoTLib_tempSnsrIDAndRawToFloatFunc.data == NULL && IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES)
 			IoTLib_debug_error("No sensor specified for polling outside temperature!");
 
@@ -331,7 +330,7 @@ void _IoTLib_check_for_unset_functions_if_debugging()
 			IoTLib_debug_error("Less registered sensor poll frequencies than sensors!"
 				" (actual: %i sensor count: %i)", IoTLib_sensorPollFrequencies.length, IoTLib_sensorIDsAndNames.length);
 		}
-	}
+	#endif
 }
 
 // Debug functions:

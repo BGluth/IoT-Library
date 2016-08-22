@@ -29,6 +29,14 @@ enum IoTLib_DebugLevel
 
 #define IoTLib_time_t uint64_t
 
+// Set to 0 if you want to provide the macro symbols by the build system.
+#define IoTLib_DEFINE_LOCAL_MACRO_SYMBOLS_IN_USER_SETTINGS 1
+
+#if IoTLib_DEFINE_LOCAL_MACRO_SYMBOLS_IN_USER_SETTINGS == 1
+	// Disable to remove some extra checks that should "in theory" be unnecessary if everything is known to be working.
+	#define DEBUG
+#endif
+
 // Helper macros (No touching!)
 // **************************************
 

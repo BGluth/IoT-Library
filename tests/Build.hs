@@ -25,7 +25,7 @@ testShrdLibsDir = "lib"
 testShrdLibsInclDir = testShrdLibsDir </> "include"
 headerDirs = [testInclLocDir, testShrdLibsInclDir, libInclDir, libInclLocDir] -- Non-recursive for now
 
-preDefinedMacros = ["DEBUG"]
+preDefinedMacros = []
 
 objsTestFolderPrefix = buildDir </> "test"
 objsLibFolderPrefix = buildDir </> "lib"
