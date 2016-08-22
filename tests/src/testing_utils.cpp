@@ -25,12 +25,12 @@ extern struct IoTLib_Vector IoTLib_waitlist_funcs;
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 extern void (*IoTLib_debugFunction)(char* debugString);
-extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_time_t lastActiveTime);
-extern IoTLib_time_t (*IoTLib_retrieveLastUploadTimeFunc)();
+extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_TIME_T lastActiveTime);
+extern IoTLib_TIME_T (*IoTLib_retrieveLastUploadTimeFunc)();
 extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
-extern IoTLib_time_t (*IoTLib_getCurrentTimeFunction)();
-extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime);
+extern IoTLib_TIME_T (*IoTLib_getCurrentTimeFunction)();
+extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_TIME_T rawTime);
 
 void clear_registered_data()
 {

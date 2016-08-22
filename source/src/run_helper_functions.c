@@ -22,14 +22,14 @@ extern struct IoTLib_Vector IoTLib_waitlist_funcs;
 
 extern struct IoTLib_SnsrIDDataPtr IoTLib_tempSnsrIDAndRawToFloatFunc;
 
-extern IoTLib_time_t (*IoTLib_retrieveLastUploadTimeFunc)();
-extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_time_t lastActiveTime);
+extern IoTLib_TIME_T (*IoTLib_retrieveLastUploadTimeFunc)();
+extern void (*IoTLib_storeLastUploadTimeFunc)(IoTLib_TIME_T lastActiveTime);
 extern void (*IoTLib_uploadFunction)(char* urlUploadString);
 extern struct IoTLib_RawSensorDataAndSensorID* (*IoTLib_retrieveAllUnsentDataFunc)();
 extern size_t (*IoTLib_getStoredUnsentDataCountFunc)();
-extern IoTLib_time_t (*IoTLib_getCurrentTimeFunction)();
+extern IoTLib_TIME_T (*IoTLib_getCurrentTimeFunction)();
 
-static IoTLib_time_t IoTLib_runFunctionStartTime;
+static IoTLib_TIME_T IoTLib_runFunctionStartTime;
 
 void _IotLib_run_implementation()
 {
@@ -37,7 +37,7 @@ void _IotLib_run_implementation()
 
 	IoTLib_initialize_managed_array(activeSensorIDs, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 
-	IoTLib_time_t currentTime = IoTLib_getCurrentTimeFunction();
+	IoTLib_TIME_T currentTime = IoTLib_getCurrentTimeFunction();
 	_IoTLib_determine_active_sensors(&activeSensorIDs);
 	_IoTLib_call_init_functions_for_active_sensors(&activeSensorIDs);
 	_IoTLib_call_power_on_functions_for_active_sensors(&activeSensorIDs);
@@ -159,9 +159,9 @@ void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID
 	{
 		IoTLib_SensorID currentSensorID = activeSensors->array[i];
 
-		IoTLib_time_t (*getLastPolledTimeFunc)() = (IoTLib_time_t (*)()) IoTLib_MKV_get(&IoTLib_retrieveSensorLastPolledTimeFunctions,
+		IoTLib_TIME_T (*getLastPolledTimeFunc)() = (IoTLib_TIME_T (*)()) IoTLib_MKV_get(&IoTLib_retrieveSensorLastPolledTimeFunctions,
 			IoTLib_MngdKVArray_SnsrIDDataPtr, currentSensorID);
-		IoTLib_time_t timeSensorWasLastPolled = getLastPolledTimeFunc();
+		IoTLib_TIME_T timeSensorWasLastPolled = getLastPolledTimeFunc();
 
 		if (!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSensorWasLastPolled, currentSensorID))
 		{
@@ -170,9 +170,9 @@ void _IoTLib_filter_out_sensors_by_poll_frequency(struct IoTLib_MngdArray_SnsrID
 	}
 }
 
-bool _IoTLib_enough_time_elapsed_for_sensor_poll(IoTLib_time_t timeSensorWasLastPolled , IoTLib_SensorID sensorID)
+bool _IoTLib_enough_time_elapsed_for_sensor_poll(IoTLib_TIME_T timeSensorWasLastPolled , IoTLib_SensorID sensorID)
 {
-	IoTLib_time_t sensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
+	IoTLib_TIME_T sensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 		IoTLib_MngdKVArray_SnsrIDTime_t, sensorID);
 	double timeSinceSensorWasLastPolled = IoTLib_calculate_time_difference(IoTLib_runFunctionStartTime, timeSensorWasLastPolled);
 
@@ -180,7 +180,7 @@ bool _IoTLib_enough_time_elapsed_for_sensor_poll(IoTLib_time_t timeSensorWasLast
 }
 
 void _IoTLib_replace_sensorID_at_current_index_with_first_sensor_from_back_of_buffer_that_can_run(size_t indexOfSensorToSwap,
-	IoTLib_time_t timeSinceSensorWasLastPolled, struct IoTLib_MngdArray_SnsrID* activeSensors)
+	IoTLib_TIME_T timeSinceSensorWasLastPolled, struct IoTLib_MngdArray_SnsrID* activeSensors)
 {
 	while (activeSensors->length > indexOfSensorToSwap &&
 		!_IoTLib_enough_time_elapsed_for_sensor_poll(timeSinceSensorWasLastPolled, activeSensors->array[activeSensors->length]))
@@ -229,7 +229,7 @@ void _IoTLib_set_last_poll_time_for_active_sensors(struct IoTLib_MngdArray_SnsrI
 
 	for (size_t i = 0; i < activeSensorIDs->length; i++)
 	{
-		void (*setSensorLastPolledTimeFunc)(IoTLib_time_t lastPollTime) = (void (*)(IoTLib_time_t)) IoTLib_MKV_get(
+		void (*setSensorLastPolledTimeFunc)(IoTLib_TIME_T lastPollTime) = (void (*)(IoTLib_TIME_T)) IoTLib_MKV_get(
 			&IoTLib_storeSensorLastPolledTimeFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs->array[i]);
 		setSensorLastPolledTimeFunc(IoTLib_runFunctionStartTime);
 	}

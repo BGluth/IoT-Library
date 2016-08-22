@@ -33,7 +33,7 @@ enum IoTLib_DebugLevel
 #define IoTLib_DEBUG_MESSAGE_LEVEL IoTLib_DEBGLVL_ERROR_WARNING
 #define IoTLib_DEBUG_HALT_ON_ERROR 0
 
-#define IoTLib_time_t uint64_t
+#define IoTLib_TIME_T uint64_t
 
 // Set to 0 if you want to provide the macro symbols by the build system.
 #define IoTLib_DEFINE_LOCAL_MACRO_SYMBOLS_IN_USER_SETTINGS 1

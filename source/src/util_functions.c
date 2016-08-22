@@ -5,26 +5,26 @@
 
 #include "managed_array_definitions.h"
 
-extern IoTLib_time_t (*IoTLib_getCurrentTimeFunction)();
-extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_time_t rawTime);
+extern IoTLib_TIME_T (*IoTLib_getCurrentTimeFunction)();
+extern uint32_t (*IoTLib_convertTimeTypeToSecondsFunc)(IoTLib_TIME_T rawTime);
 extern struct IoTLib_MngdKVArray_SnsrIDDataPtr IoTLib_retrieveSensorLastPolledTimeFunctions;
 extern struct IoTLib_MngdKVArray_SnsrIDTime_t IoTLib_sensorPollFrequencies;
 
 double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 {
-	IoTLib_time_t currentTime = IoTLib_getCurrentTimeFunction();
+	IoTLib_TIME_T currentTime = IoTLib_getCurrentTimeFunction();
 	double nearestTimeUntilNextSensorPoll = DBL_MAX;
 
 	for (size_t i = 0; i < IoTLib_retrieveSensorLastPolledTimeFunctions.length; i++)
 	{
 		IoTLib_SensorID currentSensorID = IoTLib_retrieveSensorLastPolledTimeFunctions.keys[i];
-		IoTLib_time_t (*retrieveCurrentSensorLastPolledTimeFunc)() = (IoTLib_time_t (*)())
+		IoTLib_TIME_T (*retrieveCurrentSensorLastPolledTimeFunc)() = (IoTLib_TIME_T (*)())
 			IoTLib_retrieveSensorLastPolledTimeFunctions.values[i];
 
-		IoTLib_time_t sensorLastPollTime = retrieveCurrentSensorLastPolledTimeFunc();
-		IoTLib_time_t currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
+		IoTLib_TIME_T sensorLastPollTime = retrieveCurrentSensorLastPolledTimeFunc();
+		IoTLib_TIME_T currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 			IoTLib_MngdKVArray_SnsrIDTime_t, currentSensorID);
-		IoTLib_time_t timeOfCurrentSensorsNextPoll = sensorLastPollTime + currentSensorFrequency;
+		IoTLib_TIME_T timeOfCurrentSensorsNextPoll = sensorLastPollTime + currentSensorFrequency;
 		double timeUntilCurrentSensorsNextPoll = IoTLib_calculate_time_difference(
 			timeOfCurrentSensorsNextPoll, currentTime);
 
@@ -35,7 +35,7 @@ double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 	return IoTLib_convertTimeTypeToSecondsFunc(nearestTimeUntilNextSensorPoll);
 }
 
-double IoTLib_calculate_time_difference(IoTLib_time_t endTime, IoTLib_time_t startTime)
+double IoTLib_calculate_time_difference(IoTLib_TIME_T endTime, IoTLib_TIME_T startTime)
 {
 	double endTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(endTime);
 	double startTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(startTime);
