@@ -6,7 +6,6 @@
 #include "debug_functions.h"
 #include "managed_array_definitions.h"
 #include "run_helper_functions.h"
-#include "user_settings.h"
 #include "vector.h"
 
 IoTLib_initialize_managed_key_value_array(IoTLib_sensorIDsAndNames,
