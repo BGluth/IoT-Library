@@ -10,7 +10,7 @@ import qualified System.Directory
 
 gcc = "g++"
 executableBuildFlags = ["-Wall"]
-objectBuildFlags = ["-g", "-std=c++11"]
+objectBuildFlags = ["-Wall", "-g", "-std=c++11"]
 testRunnerPath = buildDir </> "runTests" <.> exe
 
 buildDir = "_build"
