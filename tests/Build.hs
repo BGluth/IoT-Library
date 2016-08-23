@@ -17,10 +17,10 @@ buildDir = "_build"
 libDir = ".." </> "source"
 libSrcDir = libDir </> "src"
 libInclDir = libDir </> "include"
-libInclLocDir = libDir </> "include (local)"
+libInclLocDir = libDir </> "include_local"
 
 testSrcDir = "src"
-testInclLocDir = "include (local)"
+testInclLocDir = "include_local"
 testShrdLibsDir = "lib"
 testShrdLibsInclDir = testShrdLibsDir </> "include"
 headerDirs = [testInclLocDir, testShrdLibsInclDir, libInclDir, libInclLocDir] -- Non-recursive for now
