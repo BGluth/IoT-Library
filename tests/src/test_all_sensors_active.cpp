@@ -195,7 +195,7 @@ SCENARIO("Run function calls registered functions appropriately")
 		register_fake_functions(3);
 		set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 
-		WHEN("two sensors have max operating temperatures below the current environment temperature")
+		WHEN("two sensors have max operating temperatures below the current environment temperature (including the temperature sensor)")
 		{
 			set_environment_temp(hotEnvironmentTempValue);
 			init_and_run();
@@ -205,10 +205,10 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 
-			THEN("only 1 init and poweron functions should be called")
+			THEN("2 sensor's init and poweron function should be called (the active sensor and the (inactive) temperature sensor)")
 			{
-				REQUIRE(init_function_fake.call_count == 1);
-				REQUIRE(power_on_function_fake.call_count == 1);
+				REQUIRE(init_function_fake.call_count == 2);
+				REQUIRE(power_on_function_fake.call_count == 2);
 			}
 		}
 
@@ -221,10 +221,10 @@ SCENARIO("Run function calls registered functions appropriately")
 				REQUIRE(sensor_poll_function_fake.call_count == 2);
 			}
 
-			THEN("only 1 init and poweron functions should be called")
+			THEN("2 sensor's init and poweron function should be called (the active sensor and the (inactive) temperature sensor)")
 			{
-				REQUIRE(init_function_fake.call_count == 1);
-				REQUIRE(power_on_function_fake.call_count == 1);
+				REQUIRE(init_function_fake.call_count == 2);
+				REQUIRE(power_on_function_fake.call_count == 2);
 			}
 		}
 

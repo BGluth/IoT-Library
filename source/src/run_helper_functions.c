@@ -36,11 +36,13 @@ void _IotLib_run_implementation()
 	IoTLib_runFunctionStartTime = IoTLib_getCurrentTimeFunction();
 
 	IoTLib_initialize_managed_array(activeSensorIDs, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
+	IoTLib_initialize_managed_array(sensorsToInitAndPowerOn, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 
 	IoTLib_TIME_T currentTime = IoTLib_getCurrentTimeFunction();
 	_IoTLib_determine_active_sensors(&activeSensorIDs);
-	_IoTLib_call_init_functions_for_active_sensors(&activeSensorIDs);
-	_IoTLib_call_power_on_functions_for_active_sensors(&activeSensorIDs);
+	_IoTLib_get_sensor_ids_to_init_and_potentially_power_on(&activeSensorIDs, &sensorsToInitAndPowerOn);
+	_IoTLib_call_init_functions_for_active_sensors(&sensorsToInitAndPowerOn);
+	_IoTLib_call_power_on_functions_for_active_sensors(&sensorsToInitAndPowerOn);
 
 	IoTLib_initialize_managed_key_value_array(rawSensorDataBuffer,
 		struct IoTLib_MngdKVArray_SnsrIDDataPtr, IoTLib_SensorID, void*, activeSensorIDs.length);
@@ -61,9 +63,27 @@ void _IoTLib_lookup_and_call_all_void_functions_in_MKV_with_sensorIDs(
 {
 	for (size_t i = 0; i < sensorIDs->length; i++)
 	{
-		void (*voidFunction)() = (void (*)()) IoTLib_MKV_get(
-			voidFunctionBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, sensorIDs->array[i]);
-		voidFunction();
+		_IoTLib_lookup_and_call_void_function_for_sensorID(sensorIDs->array[i], voidFunctionBuffer);
+	}
+}
+
+void _IoTLib_lookup_and_call_void_function_for_sensorID(IoTLib_SensorID sensorID,
+	struct IoTLib_MngdKVArray_SnsrIDDataPtr* voidFunctionBuffer)
+{
+	void (*voidFunction)() = (void (*)()) IoTLib_MKV_get(
+		voidFunctionBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID);
+	voidFunction();
+}
+
+void _IoTLib_get_sensor_ids_to_init_and_potentially_power_on(const struct IoTLib_MngdArray_SnsrID* activeSensorIDs,
+	struct IoTLib_MngdArray_SnsrID* sensorsIdsToInit)
+{
+	for (size_t i = 0; i < activeSensorIDs->length; i++)
+	{
+		if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES && activeSensorIDs->array[i] != IoTLib_tempSnsrIDAndRawToFloatFunc.id)
+		{
+			IoTLib_MA_add(sensorsIdsToInit, activeSensorIDs->array[i], IoTLib_MngdArray_SnsrID);
+		}
 	}
 }
 
@@ -79,12 +99,18 @@ void _IoTLib_call_power_on_functions_for_active_sensors(struct IoTLib_MngdArray_
 
 	for (size_t i = 0; i < activeSensorIDs->length; i++)
 	{
-		void* rawVoidFunction;
-		if (IoTLib_MKV_try_get(&IoTLib_powerOnFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs->array[i], &rawVoidFunction))
-		{
-			void (*voidFunction)() = (void (*)())rawVoidFunction;
-			voidFunction();
-		}
+		_IoTLib_try_lookup_and_call_void_function_in_MKV_with_sensorIDs(activeSensorIDs->array[i], &IoTLib_powerOnFunctions);
+	}
+}
+
+void _IoTLib_try_lookup_and_call_void_function_in_MKV_with_sensorIDs(IoTLib_SensorID sensorID,
+	struct IoTLib_MngdKVArray_SnsrIDDataPtr* voidFunctionBuffer)
+{
+	void* rawVoidFunction;
+	if (IoTLib_MKV_try_get(voidFunctionBuffer, IoTLib_MngdKVArray_SnsrIDDataPtr, sensorID, &rawVoidFunction))
+	{
+		void (*voidFunction)() = (void (*)())rawVoidFunction;
+		voidFunction();
 	}
 }
 
@@ -101,6 +127,8 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSens
 	{
 		if (activeSensorIDs->length > 0)
 		{
+			_IoTLib_init_and_poweron_temp_sensor();
+
 			IoTLib_debug_info("Filtering active sensors by current temp...");
 			_IoTLib_determine_active_sensors_by_current_temp(activeSensorIDs);
 			IoTLib_debug_info("Active sensor count after temp filter: %i", activeSensorIDs->length);
@@ -115,6 +143,12 @@ void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSens
 	}
 }
 
+void _IoTLib_init_and_poweron_temp_sensor()
+{
+	_IoTLib_lookup_and_call_void_function_for_sensorID(IoTLib_tempSnsrIDAndRawToFloatFunc.id, &IoTLib_initFunctions);
+	_IoTLib_try_lookup_and_call_void_function_in_MKV_with_sensorIDs(IoTLib_tempSnsrIDAndRawToFloatFunc.id, &IoTLib_powerOnFunctions);
+}
+
 void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
 {
 	// TODO: What if temperature sensor has a power on function?
@@ -125,8 +159,10 @@ void _IoTLib_determine_active_sensors_by_current_temp(struct IoTLib_MngdArray_Sn
 	void* rawTemperatureData = rawTemperatureSensorReadFunc();
 	float currentTemperature = temperatureRawToFloatFunc(rawTemperatureData);
 
-	for (int i = activeSensorIDs->length - 1; i >= 0; i--)
+
+	for (int i = (int)activeSensorIDs->length - 1; i >= 0; i--)
 	{
+		IoTLib_debug_info("IN LOOP IN TEMP FILTER FUNC!");
 		IoTLib_SensorID sensorID = activeSensorIDs->array[i];
 		if (!_IoTLib_sensor_can_operate_in_current_temperature(currentTemperature, sensorID))
 		{
