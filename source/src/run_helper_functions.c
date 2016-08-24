@@ -76,7 +76,16 @@ void _IoTLib_call_init_functions_for_active_sensors(struct IoTLib_MngdArray_Snsr
 void _IoTLib_call_power_on_functions_for_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
 {
 	IoTLib_debug_info("Calling sensor power on functions.");
-	_IoTLib_lookup_and_call_all_void_functions_in_MKV_with_sensorIDs(activeSensorIDs, &IoTLib_powerOnFunctions);
+
+	for (size_t i = 0; i < activeSensorIDs->length; i++)
+	{
+		void* rawVoidFunction;
+		if (IoTLib_MKV_try_get(&IoTLib_powerOnFunctions, IoTLib_MngdKVArray_SnsrIDDataPtr, activeSensorIDs->array[i], &rawVoidFunction))
+		{
+			void (*voidFunction)() = (void (*)())rawVoidFunction;
+			voidFunction();
+		}
+	}
 }
 
 void _IoTLib_determine_active_sensors(struct IoTLib_MngdArray_SnsrID* activeSensorIDs)
