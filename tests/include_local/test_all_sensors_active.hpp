@@ -19,3 +19,4 @@ static void set_all_sensors_to_have_same_poll_frequency(size_t numSensors, IoTLi
 static void set_current_time_so_default_poll_time_sensors_poll_and_device_uploads();
 static void set_current_time_so_default_poll_time_sensors_poll_but_device_does_not_upload();
 static void set_current_time(IoTLib_TIME_T currentTime);
+static bool generate_payload_function_passed_correct_fake_poll_value();

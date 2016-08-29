@@ -182,6 +182,17 @@ static void set_current_time(IoTLib_TIME_T currentTime)
 	get_current_time_function_fake.return_val = currentTime;
 }
 
+static bool generate_payload_function_passed_correct_fake_poll_value()
+{
+	for (size_t i = 0; i < generate_upload_payload_function_fake.call_count; i++)
+	{
+		int valuePassedIn = *(int*)generate_upload_payload_function_fake.arg0_history[i];
+		if (valuePassedIn != fake_sensor_poll_return_value && valuePassedIn != fake_stored_unsent_polled_raw_value)
+			return false;
+	}
+	return true;
+}
+
 ////////////////////////
 // ACTUAL TESTS!!!! YAY!
 ////////////////////////
@@ -279,6 +290,11 @@ SCENARIO("Run function calls registered functions appropriately")
 			{
 				REQUIRE(generate_upload_payload_function_fake.call_count == numSensors + unsentDataCount);
 				REQUIRE(upload_function_fake.call_count == numSensors + unsentDataCount);
+			}
+
+			THEN("the upload function should be passed a non-empty string")
+			{
+				REQUIRE(generate_payload_function_passed_correct_fake_poll_value() == true);
 			}
 
 			THEN("the retrieve unsent data function should be called")
