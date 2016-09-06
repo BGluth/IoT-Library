@@ -228,6 +228,15 @@ void IoTLib_register_sensor_min_operating_temp(IoTLib_SensorID sensorID, float m
  */
 void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float maxTemp);
 
+/* \brief (CURRENTLY NOT IMPLEMTED!!) Registers a function to perform any initialization that needs to occur
+ * right before an upload occurs.
+ *
+ * @param uploadInitFunc The function that is called right before an upload occurs.
+ *
+ * @see IoTLib_register_upload_function(void (*uploadFunction)(char* urlUploadString))
+ */
+void IoTLib_register_upload_init_function(void (*uploadInitFunc)());
+
 /** \brief This function should upload the given URL payload.
  *
  * While the library does not directly do anything with any response from the payload,

@@ -183,6 +183,10 @@ void IoTLib_register_sensor_max_operating_temp(IoTLib_SensorID sensorID, float m
 		IoTLib_MngdKVArray_SnsrIDFloat, sensorID, maxTemp);
 }
 
+void IoTLib_register_upload_init_function(void (*uploadInitFunc)())
+{
+	// TODO
+}
 
 void IoTLib_register_upload_function(void (*uploadFunction)(char* urlUploadString))
 {
