@@ -31,7 +31,6 @@ extern "C" {
  * @see IoTLib_register_sensor_store_last_polled_time_function(IoTLib_SensorID sensorID, void (*storeSensorLastPolledTimeFunc)(IoTLib_TIME_T lastPollTime))
  */
 double IoTLib_calculate_time_in_seconds_until_next_sensor_polling();
-double IoTLib_calculate_time_difference(IoTLib_TIME_T endTime, IoTLib_TIME_T startTime);
 
 /** \brief Returns the time difference between two times in seconds.
  *

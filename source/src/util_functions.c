@@ -25,7 +25,7 @@ double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 		IoTLib_TIME_T currentSensorFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 			IoTLib_MngdKVArray_SnsrIDTime_t, currentSensorID);
 		IoTLib_TIME_T timeOfCurrentSensorsNextPoll = sensorLastPollTime + currentSensorFrequency;
-		double timeUntilCurrentSensorsNextPoll = IoTLib_calculate_time_difference(
+		double timeUntilCurrentSensorsNextPoll = IoTLib_calculate_time_difference_in_seconds(
 			timeOfCurrentSensorsNextPoll, currentTime);
 
 		if (timeUntilCurrentSensorsNextPoll < nearestTimeUntilNextSensorPoll)
@@ -35,7 +35,7 @@ double IoTLib_calculate_time_in_seconds_until_next_sensor_polling()
 	return IoTLib_convertTimeTypeToSecondsFunc(nearestTimeUntilNextSensorPoll);
 }
 
-double IoTLib_calculate_time_difference(IoTLib_TIME_T endTime, IoTLib_TIME_T startTime)
+double IoTLib_calculate_time_difference_in_seconds(IoTLib_TIME_T endTime, IoTLib_TIME_T startTime)
 {
 	double endTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(endTime);
 	double startTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(startTime);

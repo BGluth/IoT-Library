@@ -219,7 +219,7 @@ bool _IoTLib_enough_time_elapsed_for_sensor_poll(IoTLib_TIME_T timeSensorWasLast
 {
 	IoTLib_TIME_T sensorReadFrequency = IoTLib_MKV_get(&IoTLib_sensorPollFrequencies,
 		IoTLib_MngdKVArray_SnsrIDTime_t, sensorID);
-	double timeSinceSensorWasLastPolled = IoTLib_calculate_time_difference(IoTLib_runFunctionStartTime, timeSensorWasLastPolled);
+	double timeSinceSensorWasLastPolled = IoTLib_calculate_time_difference_in_seconds(IoTLib_runFunctionStartTime, timeSensorWasLastPolled);
 
 	return timeSinceSensorWasLastPolled > sensorReadFrequency;
 }
@@ -297,7 +297,7 @@ void _IoTLib_upload_all_pending_sensor_data_or_store_new_data_locally(
 
 bool _IoTLib_enough_time_elapsed_for_upload()
 {
-	double timeSinceLastUpdate = IoTLib_calculate_time_difference(IoTLib_runFunctionStartTime, IoTLib_retrieveLastUploadTimeFunc());
+	double timeSinceLastUpdate = IoTLib_calculate_time_difference_in_seconds(IoTLib_runFunctionStartTime, IoTLib_retrieveLastUploadTimeFunc());
 	return IoTLib_MIN_SECONDS_BETWEEN_UPLOADS < timeSinceLastUpdate;
 }
 
