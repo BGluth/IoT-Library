@@ -40,5 +40,5 @@ double IoTLib_calculate_time_difference_in_seconds(IoTLib_TIME_T endTime, IoTLib
 	double endTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(endTime);
 	double startTimeInSeconds = IoTLib_convertTimeTypeToSecondsFunc(startTime);
 
-	return endTime - startTime;
+	return endTimeInSeconds - startTimeInSeconds;
 }

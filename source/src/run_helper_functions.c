@@ -38,7 +38,6 @@ void _IotLib_run_implementation()
 	IoTLib_initialize_managed_array(activeSensorIDs, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 	IoTLib_initialize_managed_array(sensorsToInitAndPowerOn, struct IoTLib_MngdArray_SnsrID, IoTLib_SensorID, IoTLib_SENSOR_COUNT);
 
-	IoTLib_TIME_T currentTime = IoTLib_getCurrentTimeFunction();
 	_IoTLib_determine_active_sensors(&activeSensorIDs);
 	_IoTLib_get_sensor_ids_to_init_and_potentially_power_on(&activeSensorIDs, &sensorsToInitAndPowerOn);
 	_IoTLib_call_init_functions_for_active_sensors(&sensorsToInitAndPowerOn);

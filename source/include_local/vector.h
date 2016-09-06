@@ -18,8 +18,8 @@ extern "C" {
 struct IoTLib_Vector
 {
     void** data;
-    int size;
-    int count;
+    size_t size;
+    size_t count;
 };
 
 void IoTLib_vector_init(struct IoTLib_Vector*);

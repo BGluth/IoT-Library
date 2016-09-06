@@ -52,7 +52,7 @@ extern "C" {
 #define _IoTLib_define_managed_key_value_array_contains_key_function(managedKeyValueArrayTypeName, keyType) \
 	bool managedKeyValueArrayTypeName##_containsKey(const struct managedKeyValueArrayTypeName* keyValueArray, const keyType key) \
 	{ \
-		size_t index = keyType##_get_key_index(keyValueArray->keys, keyValueArray->length, key); \
+		int index = keyType##_get_key_index(keyValueArray->keys, keyValueArray->length, key); \
 		return IoTLib_managed_key_value_array_index_is_valid_index(index); \
 	}
 

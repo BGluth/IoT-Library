@@ -9,7 +9,6 @@ static void reset();
 static void reset_fakes();
 static void register_fake_functions(size_t numSensors);
 static double convert_time_type_to_seconds(IoTLib_TIME_T rawTime);
-static void set_all_functions_to_have_same_poll_frequency(size_t numSensors);
 static void set_environment_temp(float temp);
 static void set_two_sensors_max_temp_below_hot_env_temp();
 static void set_two_sensors_min_temps_above_cold_env_temp();

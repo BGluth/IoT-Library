@@ -14,7 +14,7 @@ void IoTLib_perform_managed_array_bounds_check(const size_t managedArrayLength, 
 
 }
 
-void IoTLib_managed_key_value_array_getFunc_validate_key_index(const size_t keyIndex)
+void IoTLib_managed_key_value_array_getFunc_validate_key_index(const int keyIndex)
 {
 	#ifdef DEBUG
 		if (!IoTLib_managed_key_value_array_index_is_valid_index(keyIndex))
@@ -24,7 +24,7 @@ void IoTLib_managed_key_value_array_getFunc_validate_key_index(const size_t keyI
 	#endif
 }
 
-bool IoTLib_managed_key_value_array_index_is_valid_index(const size_t keyIndex)
+bool IoTLib_managed_key_value_array_index_is_valid_index(const int keyIndex)
 {
 	if (keyIndex == -1)
 		return false;

@@ -98,7 +98,7 @@ static void register_fake_functions(size_t numSensors)
 	IoTLib_register_get_current_time_function(get_current_time_function);
 	IoTLib_register_convert_time_type_to_seconds_func(convert_time_type_to_seconds);
 
-	for (int i = 0; i < numSensors; i++)
+	for (size_t i = 0; i < numSensors; i++)
 	{
 		IoTLib_SensorID sensorID = IoTLib_register_sensor(sensorNames[i]);
 		IoTLib_register_sensor_init_function(sensorID, init_function);
