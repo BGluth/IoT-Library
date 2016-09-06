@@ -1,2 +1,5 @@
 tests/_build
 tests/_shake
+
+doc/html
+doc/latex
