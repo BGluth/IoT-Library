@@ -76,13 +76,13 @@ void _IoTLib_lookup_and_call_void_function_for_sensorID(IoTLib_SensorID sensorID
 }
 
 void _IoTLib_get_sensor_ids_to_init_and_potentially_power_on(const struct IoTLib_MngdArray_SnsrID* activeSensorIDs,
-	struct IoTLib_MngdArray_SnsrID* sensorsIdsToInit)
+	struct IoTLib_MngdArray_SnsrID* sensorsIdsToInitAndPowerOn)
 {
 	for (size_t i = 0; i < activeSensorIDs->length; i++)
 	{
 		if (IoTLib_USE_MIN_MAX_SENSOR_TEMPERATURES && activeSensorIDs->array[i] != IoTLib_tempSnsrIDAndRawToFloatFunc.id)
 		{
-			IoTLib_MA_add(sensorsIdsToInit, activeSensorIDs->array[i], IoTLib_MngdArray_SnsrID);
+			IoTLib_MA_add(sensorsIdsToInitAndPowerOn, activeSensorIDs->array[i], IoTLib_MngdArray_SnsrID);
 		}
 	}
 }
